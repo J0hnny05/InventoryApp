@@ -1,4 +1,127 @@
 <section class="invy-page">
-  <h1 class="text-2xl font-semibold tracking-tight">Statistics</h1>
-  <p class="text-muted">Coming up next.</p>
+  <invy-page-header
+    eyebrow="How you're using everything"
+    title="Statistics"
+    subtitle="Inventory value, sales performance, and how often you actually reach for things — broken down by category."
+  />
+
+  <div class="invy-grid">
+    <invy-stat-card
+      label="Total inventory"
+      [value]="ownedValue() | invyMoney: defaultCurrency()"
+      [hint]="ownedCount() + ' items'"
+    />
+    <invy-stat-card
+      label="Recorded uses"
+      [value]="totalUses().toString()"
+      [hint]="usesHint()"
+    />
+    <invy-stat-card
+      label="Realized profit"
+      [value]="totalProfit() | invyMoney: defaultCurrency()"
+      [valueClass]="totalProfit() | invyProfitClass"
+    />
+    <invy-stat-card
+      label="Avg time owned"
+      [value]="avgDaysOwned()"
+      hint="across owned items"
+    />
+  </div>
+
+  <div class="stats-cols">
+    <div class="invy-card">
+      <header class="stats-card__head">
+        <h3 class="text-base font-semibold tracking-tight">Value by category</h3>
+        <span class="invy-eyebrow">{{ ownedCount() }} items</span>
+      </header>
+
+      @if (valueByCategory().length === 0) {
+        <p class="invy-muted text-sm py-2">Add items to see this breakdown.</p>
+      } @else {
+        <div class="bars">
+          @for (row of valueByCategory(); track row.id) {
+            <invy-bar-row
+              [label]="row.label"
+              [value]="row.value"
+              [max]="valueMax()"
+              [display]="row.display"
+              [sub]="row.count + ' item' + (row.count === 1 ? '' : 's')"
+              [color]="row.color"
+            />
+          }
+        </div>
+      }
+    </div>
+
+    <div class="invy-card">
+      <header class="stats-card__head">
+        <h3 class="text-base font-semibold tracking-tight">Usage by category</h3>
+        <span class="invy-eyebrow">{{ totalUses() }} uses total</span>
+      </header>
+
+      @if (usageByCategory().length === 0) {
+        <p class="invy-muted text-sm py-2">
+          Click the <strong>Use</strong> button on items to track which categories you reach for most.
+        </p>
+      } @else {
+        <div class="bars">
+          @for (row of usageByCategory(); track row.id) {
+            <invy-bar-row
+              [label]="row.label"
+              [value]="row.value"
+              [max]="usageMax()"
+              [display]="row.display"
+              [sub]="row.itemsWithUse + ' of ' + row.itemCount + ' items used'"
+              [color]="row.color"
+            />
+          }
+        </div>
+      }
+    </div>
+  </div>
+
+  <div class="stats-cols">
+    <div class="invy-card">
+      <header class="stats-card__head">
+        <h3 class="text-base font-semibold tracking-tight">Most used items</h3>
+      </header>
+      @if (mostUsed().length === 0) {
+        <p class="invy-muted text-sm py-2">No usage recorded yet.</p>
+      } @else {
+        <ul class="dash-list">
+          @for (it of mostUsed(); track it.id) {
+            <li class="dash-list__row">
+              <a [routerLink]="['/inventory', it.id]" class="dash-list__main">
+                <strong>{{ it.name }}</strong>
+                <span class="invy-muted text-xs">{{ resolveCategory(it.categoryId) }}</span>
+              </a>
+              <span class="invy-numeric">{{ it.useCount }} uses</span>
+            </li>
+          }
+        </ul>
+      }
+    </div>
+
+    <div class="invy-card">
+      <header class="stats-card__head">
+        <h3 class="text-base font-semibold tracking-tight">Idle items</h3>
+        <span class="invy-eyebrow">never used</span>
+      </header>
+      @if (idle().length === 0) {
+        <p class="invy-muted text-sm py-2">Every owned item has been used at least once. Nice.</p>
+      } @else {
+        <ul class="dash-list">
+          @for (it of idle(); track it.id) {
+            <li class="dash-list__row">
+              <a [routerLink]="['/inventory', it.id]" class="dash-list__main">
+                <strong>{{ it.name }}</strong>
+                <span class="invy-muted text-xs">{{ resolveCategory(it.categoryId) }} · {{ it | invyDaysOwned }} owned</span>
+              </a>
+              <span class="invy-numeric invy-muted">0 uses</span>
+            </li>
+          }
+        </ul>
+      }
+    </div>
+  </div>
 </section>

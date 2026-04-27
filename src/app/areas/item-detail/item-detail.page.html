@@ -1,4 +1,130 @@
 <section class="invy-page">
-  <h1 class="text-2xl font-semibold tracking-tight">Item detail</h1>
-  <p class="text-muted">Coming up next.</p>
+  @let it = item();
+  @if (!it) {
+    <invy-empty-state
+      icon="search_off"
+      title="Item not found"
+      message="It may have been deleted. Head back to your inventory."
+    >
+      <a matButton routerLink="/inventory">Back to inventory</a>
+    </invy-empty-state>
+  } @else {
+    <header class="detail-head">
+      <a class="detail-back" routerLink="/inventory" aria-label="Back">
+        <mat-icon>arrow_back</mat-icon>
+        <span>Inventory</span>
+      </a>
+      <div class="detail-title">
+        <span class="invy-eyebrow">{{ resolveCategory(it.categoryId) }}</span>
+        <h1>{{ it.name }}</h1>
+        @if (it.brand) { <p class="invy-muted">{{ it.brand }}</p> }
+      </div>
+      <div class="detail-actions">
+        @if (it.status === 'owned') {
+          <button matButton="filled" (click)="recordUse(it.id)">
+            <mat-icon>visibility</mat-icon>
+            <span>Use</span>
+          </button>
+          <button matButton (click)="openSell(it)">
+            <mat-icon>sell</mat-icon>
+            <span>Sell</span>
+          </button>
+        } @else {
+          <span class="invy-chip invy-chip--success">
+            <mat-icon class="!text-base !w-4 !h-4 !leading-4">check</mat-icon>
+            Sold {{ it.soldAt }}
+          </span>
+        }
+        <button matButton (click)="openEdit(it)">
+          <mat-icon>edit</mat-icon>
+          <span>Edit</span>
+        </button>
+        <button
+          type="button"
+          class="invy-iconbtn"
+          [class.is-active]="it.pinned"
+          [title]="it.pinned ? 'Unpin' : 'Pin'"
+          (click)="togglePin(it.id)"
+        >
+          <mat-icon>{{ it.pinned ? 'push_pin' : 'keep' }}</mat-icon>
+        </button>
+        <button
+          type="button"
+          class="invy-iconbtn"
+          title="Delete"
+          (click)="confirmDelete(it)"
+        >
+          <mat-icon>delete_outline</mat-icon>
+        </button>
+      </div>
+    </header>
+
+    <div class="detail-grid">
+      <div class="invy-card detail-stats">
+        <span class="invy-eyebrow">Per-item statistics</span>
+        <div class="stats-grid">
+          <div class="stat">
+            <span class="stat__value invy-numeric">{{ it.useCount }}</span>
+            <span class="stat__label">Uses</span>
+          </div>
+          <div class="stat">
+            <span class="stat__value invy-numeric">{{ it.viewCount }}</span>
+            <span class="stat__label">Views</span>
+          </div>
+          <div class="stat">
+            <span class="stat__value invy-numeric">{{ it | invyDaysOwned }}</span>
+            <span class="stat__label">{{ it.status === 'sold' ? 'Held for' : 'Owned for' }}</span>
+          </div>
+          <div class="stat">
+            <span class="stat__value invy-numeric">{{ it.lastUsedAt ? formatRelative(it.lastUsedAt) : '—' }}</span>
+            <span class="stat__label">Last used</span>
+          </div>
+        </div>
+
+        @if (it.status === 'sold') {
+          <div class="sale-strip" [class]="profit(it) | invyProfitClass">
+            <div>
+              <span class="invy-eyebrow">Sold for</span>
+              <span class="sale-strip__value invy-numeric">{{ it.salePrice | invyMoney: it.currency }}</span>
+            </div>
+            <div>
+              <span class="invy-eyebrow">Profit</span>
+              <span class="sale-strip__value invy-numeric">
+                {{ profit(it) > 0 ? '+' : '' }}{{ profit(it) | invyMoney: it.currency }}
+              </span>
+            </div>
+            <div>
+              <span class="invy-eyebrow">ROI</span>
+              <span class="sale-strip__value invy-numeric">
+                {{ roi(it) > 0 ? '+' : '' }}{{ roi(it) | number: '1.0-1' }}%
+              </span>
+            </div>
+          </div>
+        }
+      </div>
+
+      <div class="invy-card detail-info">
+        <span class="invy-eyebrow">Item info</span>
+        <dl class="info-list">
+          <div><dt>Purchase price</dt><dd class="invy-numeric">{{ it.purchasePrice | invyMoney: it.currency }}</dd></div>
+          <div><dt>Purchase date</dt><dd>{{ it.purchaseDate }}</dd></div>
+          @if (it.condition) { <div><dt>Condition</dt><dd>{{ it.condition }}</dd></div> }
+          @if (it.location)  { <div><dt>Location</dt><dd>{{ it.location }}</dd></div> }
+          <div><dt>Currency</dt><dd>{{ it.currency }}</dd></div>
+        </dl>
+
+        @if ((it.tags?.length ?? 0) > 0) {
+          <div class="info-tags">
+            @for (tag of it.tags ?? []; track tag) {
+              <span class="invy-chip invy-chip--ghost">#{{ tag }}</span>
+            }
+          </div>
+        }
+
+        @if (it.description) {
+          <p class="info-desc">{{ it.description }}</p>
+        }
+      </div>
+    </div>
+  }
 </section>

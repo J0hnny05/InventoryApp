@@ -1,1 +1,51 @@
+@use 'tokens' as t;
+
 :host { display: block; }
+
+.stats-cols {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: t.$invy-space-4;
+}
+
+.stats-card__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: t.$invy-space-3;
+}
+
+.bars {
+  display: flex;
+  flex-direction: column;
+  gap: t.$invy-space-3;
+}
+
+.dash-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.dash-list__row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: t.$invy-space-3;
+  align-items: center;
+  padding: 10px 0;
+  border-top: 1px solid t.$invy-border;
+
+  &:first-child { border-top: 0; }
+}
+
+.dash-list__main {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+  color: inherit;
+
+  &:hover strong { color: t.$invy-sage-deep; }
+  strong { transition: color 120ms ease; }
+}

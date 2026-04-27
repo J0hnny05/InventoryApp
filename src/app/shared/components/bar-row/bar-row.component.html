@@ -1,0 +1,16 @@
+<div class="bar-row">
+  <div class="bar-row__head">
+    <span class="bar-row__label">{{ label() }}</span>
+    <span class="bar-row__value invy-numeric">{{ display() }}</span>
+  </div>
+  <div class="bar-row__track" [attr.aria-valuenow]="value()" [attr.aria-valuemax]="max()" role="progressbar">
+    <div
+      class="bar-row__fill"
+      [style.width.%]="percent()"
+      [style.background]="color() || '#B8C5C0'"
+    ></div>
+  </div>
+  @if (sub()) {
+    <span class="bar-row__sub invy-muted">{{ sub() }}</span>
+  }
+</div>

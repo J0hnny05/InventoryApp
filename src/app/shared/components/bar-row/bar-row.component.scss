@@ -1,0 +1,30 @@
+@use 'tokens' as t;
+
+:host { display: block; }
+
+.bar-row { display: flex; flex-direction: column; gap: 6px; }
+
+.bar-row__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: t.$invy-space-3;
+}
+
+.bar-row__label { font-weight: 500; color: t.$invy-ink-soft; }
+.bar-row__value { font-weight: 600; color: t.$invy-ink; }
+.bar-row__sub   { font-size: 0.72rem; }
+
+.bar-row__track {
+  height: 10px;
+  background: t.$invy-paper;
+  border: 1px solid t.$invy-border;
+  border-radius: t.$invy-radius-pill;
+  overflow: hidden;
+}
+
+.bar-row__fill {
+  height: 100%;
+  border-radius: inherit;
+  transition: width 320ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}

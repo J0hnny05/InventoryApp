@@ -1,4 +1,86 @@
 <section class="invy-page">
-  <h1 class="text-2xl font-semibold tracking-tight">Dashboard</h1>
-  <p class="text-muted">Coming up next.</p>
+  <invy-page-header
+    eyebrow="Overview"
+    title="Dashboard"
+    subtitle="A quick snapshot of what you own and how your sales are doing."
+  >
+    <button matButton="filled" (click)="goAdd()">
+      <mat-icon>add</mat-icon>
+      <span>Add item</span>
+    </button>
+    <a matButton routerLink="/inventory">View inventory</a>
+  </invy-page-header>
+
+  <div class="invy-grid">
+    <invy-stat-card
+      label="Items owned"
+      [value]="ownedCount().toString()"
+      [hint]="pinnedHint()"
+    />
+    <invy-stat-card
+      label="Owned value"
+      [value]="ownedValue() | invyMoney: defaultCurrency()"
+      hint="At purchase price"
+    />
+    <invy-stat-card
+      label="Items sold"
+      [value]="soldCount().toString()"
+    />
+    <invy-stat-card
+      label="Realized profit"
+      [value]="totalProfit() | invyMoney: defaultCurrency()"
+      [valueClass]="totalProfit() | invyProfitClass"
+      [hint]="profitHint()"
+    />
+  </div>
+
+  <div class="dash-cols">
+    <div class="invy-card">
+      <header class="dash-card__head">
+        <h3 class="text-base font-semibold tracking-tight">Recently added</h3>
+        <a class="text-xs invy-muted hover:underline" routerLink="/inventory">View all</a>
+      </header>
+
+      @if (recentlyAdded().length === 0) {
+        <p class="invy-muted text-sm py-2">Nothing yet — add your first item.</p>
+      } @else {
+        <ul class="dash-list">
+          @for (it of recentlyAdded(); track it.id) {
+            <li class="dash-list__row">
+              <a [routerLink]="['/inventory', it.id]" class="dash-list__main">
+                <strong>{{ it.name }}</strong>
+                <span class="invy-muted text-xs">{{ resolveCategory(it.categoryId) }}</span>
+              </a>
+              <span class="invy-numeric">{{ it.purchasePrice | invyMoney: it.currency }}</span>
+            </li>
+          }
+        </ul>
+      }
+    </div>
+
+    <div class="invy-card">
+      <header class="dash-card__head">
+        <h3 class="text-base font-semibold tracking-tight">Recently sold</h3>
+        <a class="text-xs invy-muted hover:underline" routerLink="/sold">View all</a>
+      </header>
+
+      @if (recentlySold().length === 0) {
+        <p class="invy-muted text-sm py-2">No sales yet.</p>
+      } @else {
+        <ul class="dash-list">
+          @for (it of recentlySold(); track it.id) {
+            <li class="dash-list__row">
+              <a [routerLink]="['/inventory', it.id]" class="dash-list__main">
+                <strong>{{ it.name }}</strong>
+                <span class="invy-muted text-xs">{{ it.soldAt }}</span>
+              </a>
+              <span class="invy-numeric" [class]="profit(it) | invyProfitClass">
+                {{ profit(it) | invyMoney: it.currency }}
+              </span>
+            </li>
+          }
+        </ul>
+      }
+    </div>
+  </div>
 </section>
