@@ -1,0 +1,23 @@
+@use 'tokens' as t;
+
+:host { display: block; min-width: min(420px, 90vw); }
+
+.profit-preview {
+  margin-top: t.$invy-space-3;
+  padding: t.$invy-space-3 t.$invy-space-4;
+  border: 1px solid t.$invy-border;
+  border-radius: t.$invy-radius-md;
+  background: t.$invy-paper;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  &.invy-positive { border-color: t.$invy-success; background: t.$invy-success-bg; }
+  &.invy-negative { border-color: t.$invy-danger;  background: t.$invy-danger-bg;  }
+}
+
+.profit-preview__value {
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}

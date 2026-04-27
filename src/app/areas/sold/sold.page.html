@@ -1,4 +1,83 @@
 <section class="invy-page">
-  <h1 class="text-2xl font-semibold tracking-tight">Sold</h1>
-  <p class="text-muted">Coming up next.</p>
+  <invy-page-header
+    eyebrow="Realized P&amp;L"
+    title="Sold"
+    subtitle="Items you've sold, with the profit or loss on each."
+  />
+
+  <div class="invy-grid">
+    <invy-stat-card
+      label="Items sold"
+      [value]="soldCount().toString()"
+    />
+    <invy-stat-card
+      label="Total revenue"
+      [value]="totalRevenue() | invyMoney: defaultCurrency()"
+    />
+    <invy-stat-card
+      label="Total cost basis"
+      [value]="totalCost() | invyMoney: defaultCurrency()"
+    />
+    <invy-stat-card
+      label="Realized profit"
+      [value]="totalProfit() | invyMoney: defaultCurrency()"
+      [valueClass]="totalProfit() | invyProfitClass"
+      [hint]="profitHint()"
+    />
+  </div>
+
+  @if (byCategory().length > 0) {
+    <div class="invy-card invy-card--inset">
+      <h3 class="text-base font-semibold mb-3 tracking-tight">Profit by category</h3>
+      <ul class="cat-breakdown">
+        @for (row of byCategory(); track row.id) {
+          <li class="cat-breakdown__row">
+            <span class="cat-breakdown__name">{{ row.name }}</span>
+            <span class="cat-breakdown__count invy-muted">{{ row.count }} sold</span>
+            <span class="cat-breakdown__value invy-numeric" [class]="row.profit | invyProfitClass">
+              {{ row.profit | invyMoney: defaultCurrency() }}
+            </span>
+          </li>
+        }
+      </ul>
+    </div>
+  }
+
+  @if (items().length === 0) {
+    <invy-empty-state
+      icon="sell"
+      title="Nothing sold yet"
+      message="Once you sell an item from your inventory, it'll show up here with the profit or loss."
+    />
+  } @else {
+    <div class="invy-card invy-card--flat overflow-hidden">
+      <div class="sold-table">
+        <div class="sold-table__head">
+          <span>Item</span>
+          <span>Sold on</span>
+          <span class="text-right">Bought</span>
+          <span class="text-right">Sold</span>
+          <span class="text-right">P&amp;L</span>
+          <span class="text-right">ROI</span>
+        </div>
+        @for (it of items(); track it.id) {
+          <a class="sold-table__row" [routerLink]="['/inventory', it.id]">
+            <span class="sold-table__name">
+              <strong>{{ it.name }}</strong>
+              <small class="invy-muted">{{ resolveCategory(it.categoryId) }}</small>
+            </span>
+            <span class="invy-muted">{{ it.soldAt }}</span>
+            <span class="text-right invy-numeric">{{ it.purchasePrice | invyMoney: it.currency }}</span>
+            <span class="text-right invy-numeric">{{ it.salePrice | invyMoney: it.currency }}</span>
+            <span class="text-right invy-numeric" [class]="profit(it) | invyProfitClass">
+              {{ profit(it) | invyMoney: it.currency }}
+            </span>
+            <span class="text-right invy-numeric" [class]="roi(it) | invyProfitClass">
+              {{ roi(it) > 0 ? '+' : '' }}{{ roi(it) | number: '1.0-1' }}%
+            </span>
+          </a>
+        }
+      </div>
+    </div>
+  }
 </section>

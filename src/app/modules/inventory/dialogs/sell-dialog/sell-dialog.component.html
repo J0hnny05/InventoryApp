@@ -1,0 +1,31 @@
+<h2 mat-dialog-title class="!font-semibold !text-xl !tracking-tight">Sell item</h2>
+
+<mat-dialog-content>
+  <p class="invy-muted text-sm mb-4">{{ data.item.name }}</p>
+
+  <form [formGroup]="form" class="grid gap-3 grid-cols-1 sm:grid-cols-2">
+    <mat-form-field appearance="outline" class="sm:col-span-2">
+      <mat-label>Sale price</mat-label>
+      <input matInput type="number" min="0" step="0.01" formControlName="salePrice" />
+      <span matTextPrefix>{{ data.item.currency }}&nbsp;</span>
+      @if (form.controls.salePrice.invalid && form.controls.salePrice.touched) {
+        <mat-error>Enter a non-negative price.</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="sm:col-span-2">
+      <mat-label>Sold on</mat-label>
+      <input matInput type="date" formControlName="soldAt" />
+    </mat-form-field>
+  </form>
+
+  <div class="profit-preview" [class]="profitClass()">
+    <span class="invy-eyebrow">Estimated profit</span>
+    <span class="profit-preview__value invy-numeric">{{ profitText() }}</span>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="!gap-2 !pt-2">
+  <button matButton (click)="cancel()">Cancel</button>
+  <button matButton="filled" [disabled]="form.invalid" (click)="confirm()">Confirm sale</button>
+</mat-dialog-actions>

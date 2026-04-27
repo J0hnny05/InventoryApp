@@ -1,0 +1,15 @@
+<h2 mat-dialog-title class="!font-semibold !text-xl !tracking-tight">{{ data.title }}</h2>
+
+<mat-dialog-content class="text-[color:var(--mat-sys-on-surface-variant)]">
+  <p>{{ data.message }}</p>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="!gap-2 !pt-2">
+  <button matButton mat-dialog-close>{{ data.cancelLabel ?? 'Cancel' }}</button>
+  <button
+    matButton="filled"
+    [class.!bg-danger]="data.tone === 'danger'"
+    [mat-dialog-close]="true"
+    cdkFocusInitial
+  >{{ data.confirmLabel ?? 'Confirm' }}</button>
+</mat-dialog-actions>

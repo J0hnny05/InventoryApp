@@ -1,0 +1,101 @@
+<article class="item-card" [class.is-pinned]="item().pinned">
+  <header class="item-card__head">
+    <span
+      class="item-card__chip"
+      [style.background]="(category()?.color ?? '#E5E3DD') + '40'"
+      [style.borderColor]="category()?.color ?? '#E5E3DD'"
+    >
+      @if (category()?.icon) {
+        <mat-icon class="!text-base !w-4 !h-4 !leading-4">{{ category()!.icon }}</mat-icon>
+      }
+      <span>{{ category()?.name ?? 'Uncategorized' }}</span>
+    </span>
+
+    <button
+      type="button"
+      class="invy-iconbtn"
+      [class.is-active]="item().pinned"
+      [attr.aria-label]="item().pinned ? 'Unpin' : 'Pin'"
+      [title]="item().pinned ? 'Unpin' : 'Pin'"
+      (click)="pin.emit(item().id)"
+    >
+      <mat-icon>{{ item().pinned ? 'push_pin' : 'keep' }}</mat-icon>
+    </button>
+  </header>
+
+  <a class="item-card__body" [routerLink]="['/inventory', item().id]">
+    <h3 class="item-card__title">{{ item().name }}</h3>
+    @if (item().brand || item().location) {
+      <p class="item-card__sub invy-muted">
+        @if (item().brand) { <span>{{ item().brand }}</span> }
+        @if (item().brand && item().location) { <span aria-hidden="true">·</span> }
+        @if (item().location) { <span>{{ item().location }}</span> }
+      </p>
+    }
+    @if (item().description) {
+      <p class="item-card__desc">{{ item().description }}</p>
+    }
+    @if ((item().tags?.length ?? 0) > 0) {
+      <div class="item-card__tags">
+        @for (tag of item().tags ?? []; track tag) {
+          <span class="invy-chip invy-chip--ghost">#{{ tag }}</span>
+        }
+      </div>
+    }
+  </a>
+
+  <footer class="item-card__foot">
+    <div class="item-card__price invy-numeric">
+      {{ item().purchasePrice | invyMoney: item().currency }}
+      <span class="invy-eyebrow">{{ item() | invyDaysOwned }}</span>
+    </div>
+
+    <div class="item-card__actions">
+      <button
+        type="button"
+        class="invy-iconbtn"
+        title="Use"
+        aria-label="Record use"
+        (click)="use.emit(item().id)"
+      >
+        <mat-icon>visibility</mat-icon>
+      </button>
+
+      <button
+        matButton="filled"
+        class="!min-w-0 !px-3"
+        (click)="sell.emit(item().id)"
+      >
+        <mat-icon>sell</mat-icon>
+        <span>Sell</span>
+      </button>
+
+      <button
+        type="button"
+        class="invy-iconbtn"
+        [matMenuTriggerFor]="more"
+        title="More"
+        aria-label="More actions"
+      >
+        <mat-icon>more_horiz</mat-icon>
+      </button>
+      <mat-menu #more="matMenu">
+        <button mat-menu-item (click)="edit.emit(item().id)">
+          <mat-icon>edit</mat-icon>
+          <span>Edit</span>
+        </button>
+        <button mat-menu-item (click)="remove.emit(item().id)">
+          <mat-icon>delete_outline</mat-icon>
+          <span>Delete</span>
+        </button>
+      </mat-menu>
+    </div>
+  </footer>
+
+  @if (item().useCount > 0) {
+    <span class="item-card__usebadge invy-eyebrow" title="Uses recorded">
+      <mat-icon class="!text-base !w-4 !h-4 !leading-4">visibility</mat-icon>
+      {{ item().useCount }} use{{ item().useCount === 1 ? '' : 's' }}
+    </span>
+  }
+</article>

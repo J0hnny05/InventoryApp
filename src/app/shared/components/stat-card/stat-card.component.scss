@@ -1,0 +1,27 @@
+@use 'tokens' as t;
+
+:host { display: block; }
+
+.stat-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: t.$invy-space-5 t.$invy-space-5;
+  background: t.$invy-surface;
+  border: 1px solid t.$invy-border;
+  border-radius: t.$invy-radius-md;
+  min-height: 96px;
+  transition: border-color 120ms ease;
+
+  &:hover { border-color: t.$invy-border-strong; }
+}
+
+.stat-card__value {
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: t.$invy-ink;
+  margin-top: 2px;
+}
+
+.stat-card__hint { font-size: 0.8rem; }

@@ -1,1 +1,32 @@
+@use 'tokens' as t;
+
 :host { display: block; }
+
+.filters {
+  display: flex;
+  gap: t.$invy-space-3;
+  align-items: stretch;
+  flex-wrap: wrap;
+
+  mat-form-field { flex: 1 1 240px; }
+  .filters__sort   { flex: 0 1 240px; }
+}
+
+.cat-chips {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+
+  .invy-chip {
+    cursor: pointer;
+    transition: all 120ms ease;
+    border-width: 1px;
+    user-select: none;
+
+    &.is-on {
+      background: t.$invy-sage-soft;
+      border-color: t.$invy-sage-deep;
+      color: t.$invy-ink;
+    }
+  }
+}

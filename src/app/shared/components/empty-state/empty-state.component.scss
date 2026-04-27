@@ -1,0 +1,38 @@
+@use 'tokens' as t;
+
+:host { display: block; }
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: t.$invy-space-3;
+  padding: t.$invy-space-10 t.$invy-space-6;
+  border: 1px dashed t.$invy-border-strong;
+  border-radius: t.$invy-radius-lg;
+  background: t.$invy-paper;
+}
+
+.empty__icon {
+  display: inline-flex;
+  width: 56px;
+  height: 56px;
+  align-items: center;
+  justify-content: center;
+  background: t.$invy-sage-soft;
+  border-radius: t.$invy-radius-pill;
+  color: t.$invy-sage-deep;
+
+  mat-icon { font-size: 28px; width: 28px; height: 28px; }
+}
+
+.empty__title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: t.$invy-ink;
+}
+
+.empty__message { max-width: 32ch; }
+
+.empty__actions { display: flex; gap: t.$invy-space-2; margin-top: t.$invy-space-2; }

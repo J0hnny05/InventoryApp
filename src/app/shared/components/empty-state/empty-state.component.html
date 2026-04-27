@@ -1,0 +1,12 @@
+<div class="empty">
+  <div class="empty__icon">
+    <mat-icon>{{ icon() }}</mat-icon>
+  </div>
+  <h3 class="empty__title">{{ title() }}</h3>
+  @if (message()) {
+    <p class="empty__message invy-muted">{{ message() }}</p>
+  }
+  <div class="empty__actions">
+    <ng-content />
+  </div>
+</div>

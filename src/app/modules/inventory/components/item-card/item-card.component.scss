@@ -1,0 +1,113 @@
+@use 'tokens' as t;
+
+:host { display: block; }
+
+.item-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: t.$invy-surface;
+  border: 1px solid t.$invy-border;
+  border-radius: t.$invy-radius-md;
+  padding: t.$invy-space-4;
+  gap: t.$invy-space-3;
+  transition: border-color 120ms ease, transform 120ms ease;
+
+  &:hover { border-color: t.$invy-border-strong; }
+  &.is-pinned { border-color: t.$invy-sage-deep; }
+}
+
+.item-card__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: t.$invy-space-2;
+}
+
+.item-card__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: t.$invy-radius-sm;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: t.$invy-ink-soft;
+  border: 1px solid t.$invy-border;
+}
+
+.item-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: inherit;
+
+  &:hover .item-card__title { color: t.$invy-sage-deep; }
+}
+
+.item-card__title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+  color: t.$invy-ink;
+  transition: color 120ms ease;
+}
+
+.item-card__sub {
+  font-size: 0.8rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.item-card__desc {
+  font-size: 0.85rem;
+  color: t.$invy-ink-soft;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.item-card__tags { display: flex; gap: 4px; flex-wrap: wrap; }
+
+.item-card__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: t.$invy-space-2;
+  margin-top: auto;
+  padding-top: t.$invy-space-2;
+  border-top: 1px solid t.$invy-border;
+}
+
+.item-card__price {
+  display: flex;
+  flex-direction: column;
+  font-weight: 600;
+  font-size: 1rem;
+  color: t.$invy-ink;
+}
+
+.item-card__actions {
+  display: flex;
+  align-items: center;
+  gap: t.$invy-space-1;
+}
+
+.item-card__usebadge {
+  position: absolute;
+  top: -8px;
+  left: 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  background: t.$invy-paper;
+  color: t.$invy-muted;
+  border: 1px solid t.$invy-border;
+  border-radius: t.$invy-radius-pill;
+  font-size: 0.65rem;
+}
