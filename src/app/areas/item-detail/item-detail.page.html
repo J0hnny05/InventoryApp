@@ -22,7 +22,7 @@
       <div class="detail-actions">
         @if (it.status === 'owned') {
           <button matButton="filled" (click)="recordUse(it.id)">
-            <mat-icon>visibility</mat-icon>
+            <mat-icon>touch_app</mat-icon>
             <span>Use</span>
           </button>
           <button matButton (click)="openSell(it)">
@@ -60,7 +60,8 @@
     </header>
 
     <div class="detail-grid">
-      <div class="invy-card detail-stats">
+      <mat-card appearance="outlined" class="detail-card detail-stats">
+        <mat-card-content class="detail-card__inner">
         <span class="invy-eyebrow">Per-item statistics</span>
         <div class="stats-grid">
           <div class="stat">
@@ -72,7 +73,10 @@
             <span class="stat__label">Views</span>
           </div>
           <div class="stat">
-            <span class="stat__value invy-numeric">{{ it | invyDaysOwned }}</span>
+            <span class="stat__value invy-numeric">
+              {{ daysOwnedOf(it) }}
+              <small class="stat__unit">{{ daysOwnedOf(it) === 1 ? 'day' : 'days' }}</small>
+            </span>
             <span class="stat__label">{{ it.status === 'sold' ? 'Held for' : 'Owned for' }}</span>
           </div>
           <div class="stat">
@@ -101,9 +105,11 @@
             </div>
           </div>
         }
-      </div>
+        </mat-card-content>
+      </mat-card>
 
-      <div class="invy-card detail-info">
+      <mat-card appearance="outlined" class="detail-card detail-info">
+        <mat-card-content class="detail-card__inner">
         <span class="invy-eyebrow">Item info</span>
         <dl class="info-list">
           <div><dt>Purchase price</dt><dd class="invy-numeric">{{ it.purchasePrice | invyMoney: it.currency }}</dd></div>
@@ -124,7 +130,8 @@
         @if (it.description) {
           <p class="info-desc">{{ it.description }}</p>
         }
-      </div>
+        </mat-card-content>
+      </mat-card>
     </div>
   }
 </section>

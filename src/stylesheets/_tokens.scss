@@ -2,16 +2,22 @@
 // shape, spacing, and elevation. Theme + utilities consume these.
 
 // ── Washed palette ─────────────────────────────────────────────
-$invy-sage:        #B8C5C0;  // primary (calm sage)
+// Blue is the primary accent; sage/mauve stay as secondary/category colors.
+$invy-blue:        #B8C5D8;  // soft slate-blue (chips, passive accent)
+$invy-blue-deep:   #5C7AA3;  // primary brand colour (buttons, links, focus)
+$invy-blue-soft:   #E5ECF4;  // washed background tint (active nav, hover)
+
+$invy-sage:        #B8C5C0;  // secondary accent
 $invy-sage-deep:   #8FA39C;
 $invy-sage-soft:   #DCE3DF;
 
-$invy-mauve:       #C8B5C4;  // tertiary (dusty mauve)
+$invy-mauve:       #C8B5C4;  // tertiary (dusty mauve, category use)
 $invy-mauve-deep:  #9E8C9C;
 
-$invy-sand:        #D8CFBE;  // surface tint (linen)
-$invy-paper:       #FAF8F4;  // app background
+$invy-sand:        #D8CFBE;  // legacy surface tint (still used for category color)
+$invy-paper:       #FFFFFF;  // app background — pure white
 $invy-surface:     #FFFFFF;  // card surface
+$invy-bg-subtle:   #F7F8FA;  // gentle off-white for nested panels / hover backgrounds
 
 $invy-ink:         #2B2A28;  // primary text
 $invy-ink-soft:    #4A4844;

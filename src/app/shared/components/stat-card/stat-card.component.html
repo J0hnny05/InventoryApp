@@ -1,7 +1,9 @@
-<div class="stat-card">
-  <span class="invy-eyebrow">{{ label() }}</span>
-  <span class="stat-card__value invy-numeric" [class]="valueClass()">{{ value() }}</span>
-  @if (hint()) {
-    <span class="stat-card__hint invy-muted">{{ hint() }}</span>
-  }
-</div>
+<mat-card appearance="outlined" class="stat-card">
+  <mat-card-content class="stat-card__content">
+    <span class="invy-eyebrow">{{ label() }}</span>
+    <span class="stat-card__value invy-numeric" [class]="valueClass()">{{ value() }}</span>
+    @if (hint()) {
+      <span class="stat-card__hint invy-muted">{{ hint() }}</span>
+    }
+  </mat-card-content>
+</mat-card>

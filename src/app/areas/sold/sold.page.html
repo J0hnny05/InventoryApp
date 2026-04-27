@@ -12,35 +12,40 @@
     />
     <invy-stat-card
       label="Total revenue"
-      [value]="totalRevenue() | invyMoney: defaultCurrency()"
+      [value]="totalRevenueText()"
     />
     <invy-stat-card
       label="Total cost basis"
-      [value]="totalCost() | invyMoney: defaultCurrency()"
+      [value]="totalCostText()"
     />
     <invy-stat-card
       label="Realized profit"
-      [value]="totalProfit() | invyMoney: defaultCurrency()"
-      [valueClass]="totalProfit() | invyProfitClass"
+      [value]="totalProfitText()"
+      [valueClass]="profitToneClass()"
       [hint]="profitHint()"
     />
   </div>
 
   @if (byCategory().length > 0) {
-    <div class="invy-card invy-card--inset">
-      <h3 class="text-base font-semibold mb-3 tracking-tight">Profit by category</h3>
-      <ul class="cat-breakdown">
-        @for (row of byCategory(); track row.id) {
-          <li class="cat-breakdown__row">
-            <span class="cat-breakdown__name">{{ row.name }}</span>
-            <span class="cat-breakdown__count invy-muted">{{ row.count }} sold</span>
-            <span class="cat-breakdown__value invy-numeric" [class]="row.profit | invyProfitClass">
-              {{ row.profit | invyMoney: defaultCurrency() }}
-            </span>
-          </li>
-        }
-      </ul>
-    </div>
+    <mat-card appearance="outlined" class="sold-card sold-card--inset">
+      <mat-card-content class="sold-card__inner">
+        <h3 class="text-base font-semibold mb-3 tracking-tight">Profit by category</h3>
+        <ul class="cat-breakdown">
+          @for (row of byCategory(); track row.id) {
+            <li class="cat-breakdown__row">
+              <span class="cat-breakdown__name">
+                {{ row.name }}
+                <small class="invy-muted">· {{ row.currency }}</small>
+              </span>
+              <span class="cat-breakdown__count invy-muted">{{ row.count }} sold</span>
+              <span class="cat-breakdown__value invy-numeric" [class]="row.profit | invyProfitClass">
+                {{ row.profit | invyMoney: row.currency }}
+              </span>
+            </li>
+          }
+        </ul>
+      </mat-card-content>
+    </mat-card>
   }
 
   @if (items().length === 0) {
@@ -50,7 +55,7 @@
       message="Once you sell an item from your inventory, it'll show up here with the profit or loss."
     />
   } @else {
-    <div class="invy-card invy-card--flat overflow-hidden">
+    <mat-card appearance="outlined" class="sold-card sold-card--table">
       <div class="sold-table">
         <div class="sold-table__head">
           <span>Item</span>
@@ -78,6 +83,6 @@
           </a>
         }
       </div>
-    </div>
+    </mat-card>
   }
 </section>

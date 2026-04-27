@@ -5,14 +5,25 @@
 .stats-cols {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: t.$invy-space-4;
+  gap: t.$invy-space-5;
+  align-items: stretch;
+  grid-auto-rows: 1fr;
+}
+
+.stats-card { height: 100%; }
+
+.stats-card__inner {
+  display: flex !important;
+  flex-direction: column;
+  padding: t.$invy-space-6 !important;
+  height: 100%;
 }
 
 .stats-card__head {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  margin-bottom: t.$invy-space-3;
+  margin-bottom: t.$invy-space-4;
 }
 
 .bars {
@@ -46,6 +57,6 @@
   line-height: 1.25;
   color: inherit;
 
-  &:hover strong { color: t.$invy-sage-deep; }
+  &:hover strong { color: t.$invy-blue-deep; }
   strong { transition: color 120ms ease; }
 }

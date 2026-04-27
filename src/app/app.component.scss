@@ -30,8 +30,8 @@
   width: 36px;
   height: 36px;
   border-radius: t.$invy-radius-md;
-  background: t.$invy-sage-soft;
-  color: t.$invy-ink;
+  background: t.$invy-blue-soft;
+  color: t.$invy-blue-deep;
   font-size: 1.4rem;
 }
 
@@ -47,10 +47,7 @@
   letter-spacing: -0.01em;
 }
 
-.brand__sub {
-  font-size: 0.7rem;
-  color: t.$invy-muted;
-}
+.brand__close { margin-left: auto; }
 
 .nav {
   display: flex;
@@ -71,13 +68,13 @@
   transition: background 120ms ease, color 120ms ease;
 
   &:hover {
-    background: #F4F1EA;
+    background: t.$invy-bg-subtle;
     color: t.$invy-ink;
   }
 
   &.is-active {
-    background: t.$invy-sage-soft;
-    color: t.$invy-ink;
+    background: t.$invy-blue-soft;
+    color: t.$invy-blue-deep;
   }
 }
 
@@ -98,6 +95,35 @@
   min-height: 100vh;
 }
 
-@media (max-width: 720px) {
-  .shell__nav { width: 200px; }
+// ── Mobile topbar ────────────────────────────────────────────────
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: t.$invy-space-3;
+  padding: t.$invy-space-3 t.$invy-space-4;
+  background: t.$invy-surface;
+  border-bottom: 1px solid t.$invy-border;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
+.topbar__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: t.$invy-space-2;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.topbar__mark {
+  display: inline-flex;
+  width: 28px;
+  height: 28px;
+  align-items: center;
+  justify-content: center;
+  background: t.$invy-blue-soft;
+  color: t.$invy-blue-deep;
+  border-radius: t.$invy-radius-sm;
+  font-size: 1rem;
 }

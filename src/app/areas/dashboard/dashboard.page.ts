@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog } from '@angular/material/dialog';
 import { firstValueFrom } from 'rxjs';
@@ -11,7 +12,6 @@ import { UiStore } from '../../store/ui.store';
 import { InventoryItem, profitOf } from '../../modules/inventory/models/inventory-item.model';
 import { MoneyPipe } from '../../modules/inventory/pipes/money.pipe';
 import { ProfitClassPipe } from '../../modules/inventory/pipes/profit-class.pipe';
-import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
 import { StatCardComponent } from '../../shared/components/stat-card/stat-card.component';
 import {
   ItemFormDialogComponent,
@@ -27,8 +27,8 @@ const RECENT_LIMIT = 5;
   imports: [
     RouterLink,
     MatButtonModule,
+    MatCardModule,
     MatIconModule,
-    PageHeaderComponent,
     StatCardComponent,
     MoneyPipe,
     ProfitClassPipe,
@@ -43,11 +43,37 @@ export class DashboardPage {
   private readonly dialog = inject(MatDialog);
   private readonly router = inject(Router);
 
+  private readonly money = new MoneyPipe();
+
   readonly defaultCurrency = this.uiStore.defaultCurrency;
   readonly ownedCount = computed(() => this.inventoryStore.owned().length);
   readonly soldCount  = computed(() => this.inventoryStore.sold().length);
-  readonly ownedValue = this.inventoryStore.totalOwnedValue;
-  readonly totalProfit = this.inventoryStore.totalRealizedProfit;
+
+  readonly ownedValueText = computed(() =>
+    this.formatByCurrency(this.inventoryStore.ownedValueByCurrency()),
+  );
+
+  readonly totalProfitText = computed(() =>
+    this.formatByCurrency(this.inventoryStore.realizedProfitByCurrency(), { signed: true }),
+  );
+
+  /** Sign of the dominant-currency profit, used to color the value tone. */
+  readonly profitToneClass = computed(() => {
+    const sums = Array.from(this.inventoryStore.realizedProfitByCurrency().values());
+    if (sums.length === 0) return 'invy-muted';
+    const total = sums.reduce((a, b) => a + b, 0);
+    if (total > 0) return 'invy-positive';
+    if (total < 0) return 'invy-negative';
+    return 'invy-muted';
+  });
+
+  readonly greeting = computed(() => {
+    const h = new Date().getHours();
+    if (h < 5)  return 'Still up?';
+    if (h < 12) return 'Good morning';
+    if (h < 18) return 'Good afternoon';
+    return 'Good evening';
+  });
 
   readonly pinnedHint = computed(() => {
     const n = this.inventoryStore.pinned().length;
@@ -57,10 +83,24 @@ export class DashboardPage {
   readonly profitHint = computed(() => {
     const n = this.soldCount();
     if (n === 0) return 'Nothing sold yet';
-    const avg = this.totalProfit() / n;
-    const sign = avg >= 0 ? '+' : '';
-    return `avg ${sign}${avg.toFixed(0)} per item`;
+    return `${n} sale${n === 1 ? '' : 's'}`;
   });
+
+  /** Render a multi-currency total as one line per currency, sorted by magnitude. */
+  private formatByCurrency(
+    map: ReadonlyMap<string, number>,
+    opts: { signed?: boolean } = {},
+  ): string {
+    if (map.size === 0) return '—';
+    const rows = Array.from(map, ([currency, amount]) => ({ currency, amount }))
+      .sort((a, b) => Math.abs(b.amount) - Math.abs(a.amount));
+    return rows
+      .map((r) => {
+        const formatted = this.money.transform(r.amount, r.currency);
+        return opts.signed && r.amount > 0 ? `+${formatted}` : formatted;
+      })
+      .join('\n');
+  }
 
   readonly recentlyAdded = computed<readonly InventoryItem[]>(() =>
     [...this.inventoryStore.owned()]

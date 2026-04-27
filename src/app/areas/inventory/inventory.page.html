@@ -1,17 +1,45 @@
-<section class="invy-page">
-  <invy-page-header
-    eyebrow="What you own"
-    title="Inventory"
-    subtitle="Track everything you own — pin the items you reach for most."
-  >
-    <button matButton="filled" (click)="openAddDialog()">
-      <mat-icon>add</mat-icon>
-      <span>Add item</span>
-    </button>
-  </invy-page-header>
+<section class="invy-page inv-page">
+  <mat-card appearance="outlined" class="inv-hero">
+    <mat-card-content class="inv-hero__inner">
+      <div class="inv-hero__copy">
+        <span class="invy-eyebrow">Your stuff</span>
+        <h1 class="inv-hero__title">Inventory</h1>
+        <div class="inv-hero__stats">
+          <div class="inv-hero__stat">
+            <span class="inv-hero__statValue invy-numeric">{{ totalOwned() }}</span>
+            <span class="inv-hero__statLabel">items</span>
+          </div>
+          <div class="inv-hero__stat">
+            <span class="inv-hero__statValue invy-numeric">{{ pinnedCount() }}</span>
+            <span class="inv-hero__statLabel">pinned</span>
+          </div>
+          <div class="inv-hero__stat inv-hero__stat--values">
+            <span class="inv-hero__statLabel">total value</span>
+            @if (valueRows().length === 0) {
+              <span class="inv-hero__statValue invy-numeric invy-muted">—</span>
+            } @else {
+              <div class="inv-hero__values">
+                @for (row of valueRows(); track row.currency) {
+                  <span class="inv-hero__valueChip invy-numeric">
+                    {{ row.amount | invyMoney: row.currency }}
+                  </span>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+      <div class="inv-hero__actions">
+        <button matButton="filled" (click)="openAddDialog()">
+          <mat-icon>add</mat-icon>
+          <span>Add item</span>
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
 
   <div class="filters">
-    <mat-form-field appearance="outline" class="filters__search">
+    <mat-form-field appearance="outline" subscriptSizing="dynamic" class="filters__search">
       <mat-icon matPrefix>search</mat-icon>
       <mat-label>Search</mat-label>
       <input
@@ -24,7 +52,7 @@
       />
     </mat-form-field>
 
-    <mat-form-field appearance="outline" class="filters__sort">
+    <mat-form-field appearance="outline" subscriptSizing="dynamic" class="filters__sort">
       <mat-label>Sort</mat-label>
       <mat-select [value]="sort()" (selectionChange)="onSortChange($event.value)">
         <mat-option value="pinned-recent">Pinned, then recent</mat-option>
@@ -77,7 +105,7 @@
       </invy-empty-state>
     }
   } @else {
-    <div class="invy-grid invy-grid--wide">
+    <div class="invy-grid invy-grid--items">
       @for (it of visibleItems(); track it.id) {
         <invy-item-card
           [item]="it"

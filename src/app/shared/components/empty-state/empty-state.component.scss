@@ -11,7 +11,7 @@
   padding: t.$invy-space-10 t.$invy-space-6;
   border: 1px dashed t.$invy-border-strong;
   border-radius: t.$invy-radius-lg;
-  background: t.$invy-paper;
+  background: t.$invy-bg-subtle;
 }
 
 .empty__icon {
@@ -20,9 +20,9 @@
   height: 56px;
   align-items: center;
   justify-content: center;
-  background: t.$invy-sage-soft;
+  background: t.$invy-blue-soft;
   border-radius: t.$invy-radius-pill;
-  color: t.$invy-sage-deep;
+  color: t.$invy-blue-deep;
 
   mat-icon { font-size: 28px; width: 28px; height: 28px; }
 }

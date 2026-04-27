@@ -1,56 +1,76 @@
-<article class="item-card" [class.is-pinned]="item().pinned">
-  <header class="item-card__head">
-    <span
-      class="item-card__chip"
-      [style.background]="(category()?.color ?? '#E5E3DD') + '40'"
-      [style.borderColor]="category()?.color ?? '#E5E3DD'"
-    >
-      @if (category()?.icon) {
-        <mat-icon class="!text-base !w-4 !h-4 !leading-4">{{ category()!.icon }}</mat-icon>
+<mat-card
+  appearance="outlined"
+  class="item-card"
+  [class.is-pinned]="item().pinned"
+>
+  <!-- Colored category strip across the top -->
+  <div
+    class="item-card__strip"
+    [style.background]="(category()?.color ?? '#B8C5D8')"
+  ></div>
+
+  <mat-card-content class="item-card__inner">
+    <header class="item-card__head">
+      <span
+        class="item-card__chip"
+        [style.background]="(category()?.color ?? '#E5E3DD') + '33'"
+        [style.borderColor]="category()?.color ?? '#E5E3DD'"
+      >
+        @if (category()?.icon) {
+          <mat-icon class="!text-base !w-4 !h-4 !leading-4">{{ category()!.icon }}</mat-icon>
+        }
+        <span>{{ category()?.name ?? 'Uncategorized' }}</span>
+      </span>
+
+      <button
+        type="button"
+        class="invy-iconbtn"
+        [class.is-active]="item().pinned"
+        [attr.aria-label]="item().pinned ? 'Unpin' : 'Pin'"
+        [title]="item().pinned ? 'Unpin' : 'Pin'"
+        (click)="pin.emit(item().id)"
+      >
+        <mat-icon>push_pin</mat-icon>
+      </button>
+    </header>
+
+    <a class="item-card__body" [routerLink]="['/inventory', item().id]">
+      <h3 class="item-card__title">{{ item().name }}</h3>
+      @if (item().brand || item().location) {
+        <p class="item-card__sub invy-muted">
+          @if (item().brand) { <span>{{ item().brand }}</span> }
+          @if (item().brand && item().location) { <span aria-hidden="true">·</span> }
+          @if (item().location) { <span>{{ item().location }}</span> }
+        </p>
       }
-      <span>{{ category()?.name ?? 'Uncategorized' }}</span>
-    </span>
+      @if (item().description) {
+        <p class="item-card__desc">{{ item().description }}</p>
+      }
+      @if ((item().tags?.length ?? 0) > 0) {
+        <div class="item-card__tags">
+          @for (tag of item().tags ?? []; track tag) {
+            <span class="invy-chip invy-chip--ghost">#{{ tag }}</span>
+          }
+        </div>
+      }
+    </a>
 
-    <button
-      type="button"
-      class="invy-iconbtn"
-      [class.is-active]="item().pinned"
-      [attr.aria-label]="item().pinned ? 'Unpin' : 'Pin'"
-      [title]="item().pinned ? 'Unpin' : 'Pin'"
-      (click)="pin.emit(item().id)"
-    >
-      <mat-icon>push_pin</mat-icon>
-    </button>
-  </header>
-
-  <a class="item-card__body" [routerLink]="['/inventory', item().id]">
-    <h3 class="item-card__title">{{ item().name }}</h3>
-    @if (item().brand || item().location) {
-      <p class="item-card__sub invy-muted">
-        @if (item().brand) { <span>{{ item().brand }}</span> }
-        @if (item().brand && item().location) { <span aria-hidden="true">·</span> }
-        @if (item().location) { <span>{{ item().location }}</span> }
-      </p>
-    }
-    @if (item().description) {
-      <p class="item-card__desc">{{ item().description }}</p>
-    }
-    @if ((item().tags?.length ?? 0) > 0) {
-      <div class="item-card__tags">
-        @for (tag of item().tags ?? []; track tag) {
-          <span class="invy-chip invy-chip--ghost">#{{ tag }}</span>
+    <div class="item-card__price-block">
+      <div class="item-card__price-main invy-numeric">
+        {{ item().purchasePrice | invyMoney: item().currency }}
+      </div>
+      <div class="item-card__price-meta">
+        <span class="invy-eyebrow">{{ item() | invyDaysOwned }}</span>
+        @if (item().useCount > 0) {
+          <span class="item-card__usepill" title="Uses recorded">
+            <mat-icon class="!text-base !w-4 !h-4 !leading-4">touch_app</mat-icon>
+            {{ item().useCount }}
+          </span>
         }
       </div>
-    }
-  </a>
-
-  <footer class="item-card__foot">
-    <div class="item-card__price invy-numeric">
-      {{ item().purchasePrice | invyMoney: item().currency }}
-      <span class="invy-eyebrow">{{ item() | invyDaysOwned }}</span>
     </div>
 
-    <div class="item-card__actions">
+    <footer class="item-card__foot">
       <button
         type="button"
         class="invy-iconbtn"
@@ -58,12 +78,12 @@
         aria-label="Record use"
         (click)="use.emit(item().id)"
       >
-        <mat-icon>visibility</mat-icon>
+        <mat-icon>touch_app</mat-icon>
       </button>
 
       <button
         matButton="filled"
-        class="!min-w-0 !px-3"
+        class="!min-w-0 !flex-1"
         (click)="sell.emit(item().id)"
       >
         <mat-icon>sell</mat-icon>
@@ -89,13 +109,6 @@
           <span>Delete</span>
         </button>
       </mat-menu>
-    </div>
-  </footer>
-
-  @if (item().useCount > 0) {
-    <span class="item-card__usebadge invy-eyebrow" title="Uses recorded">
-      <mat-icon class="!text-base !w-4 !h-4 !leading-4">visibility</mat-icon>
-      {{ item().useCount }} use{{ item().useCount === 1 ? '' : 's' }}
-    </span>
-  }
-</article>
+    </footer>
+  </mat-card-content>
+</mat-card>

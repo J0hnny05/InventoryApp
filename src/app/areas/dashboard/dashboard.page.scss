@@ -2,17 +2,92 @@
 
 :host { display: block; }
 
+// ── Hero ─────────────────────────────────────────────────────────
+.hero {
+  overflow: hidden;
+  background: linear-gradient(135deg, t.$invy-blue-soft 0%, t.$invy-surface 60%, t.$invy-bg-subtle 100%);
+}
+
+.hero__inner {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: t.$invy-space-8;
+  align-items: center;
+  padding: t.$invy-space-10 t.$invy-space-10 t.$invy-space-8 !important;
+}
+
+.hero__copy {
+  display: flex;
+  flex-direction: column;
+  gap: t.$invy-space-3;
+}
+
+.hero__title {
+  font-size: 2.25rem;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+  color: t.$invy-ink;
+}
+
+.hero__lead {
+  color: t.$invy-ink-soft;
+  font-size: 0.98rem;
+  line-height: 1.5;
+  max-width: 48ch;
+
+  strong {
+    color: t.$invy-ink;
+    font-weight: 600;
+  }
+}
+
+.hero__actions {
+  display: flex;
+  gap: t.$invy-space-2;
+  margin-top: t.$invy-space-2;
+  flex-wrap: wrap;
+}
+
+.hero__art {
+  width: 100%;
+  max-width: 320px;
+  height: auto;
+  justify-self: end;
+}
+
+@media (max-width: 760px) {
+  .hero__inner {
+    grid-template-columns: 1fr;
+    padding: t.$invy-space-6;
+  }
+  .hero__art { max-width: 220px; justify-self: center; }
+  .hero__title { font-size: 1.75rem; }
+}
+
+// ── Two-column dashboard cards ──────────────────────────────────
 .dash-cols {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: t.$invy-space-4;
+  gap: t.$invy-space-5;
+  align-items: stretch;
+  grid-auto-rows: 1fr;
+}
+
+.dash-card { height: 100%; }
+
+.dash-card__inner {
+  display: flex !important;
+  flex-direction: column;
+  padding: t.$invy-space-6 !important;
+  height: 100%;
 }
 
 .dash-card__head {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  margin-bottom: t.$invy-space-3;
+  margin-bottom: t.$invy-space-4;
 }
 
 .dash-list {
@@ -40,6 +115,6 @@
   line-height: 1.25;
   color: inherit;
 
-  &:hover strong { color: t.$invy-sage-deep; }
+  &:hover strong { color: t.$invy-blue-deep; }
   strong { transition: color 120ms ease; }
 }

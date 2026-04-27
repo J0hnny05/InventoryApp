@@ -9,37 +9,37 @@ html {
   @include mat.theme((
     color: (
       theme-type: light,
-      primary: mat.$green-palette,
+      primary: mat.$blue-palette,
       tertiary: mat.$violet-palette,
     ),
     typography: 'Inter, system-ui, sans-serif',
     density: 0,
   ));
 
-  // ── Surface / background ─────────────────────────────────────
-  --mat-sys-background:                 #{t.$invy-paper};
-  --mat-sys-surface:                    #{t.$invy-paper};
-  --mat-sys-surface-dim:                #{t.$invy-paper};
-  --mat-sys-surface-bright:             #{t.$invy-surface};
-  --mat-sys-surface-container-lowest:   #{t.$invy-surface};
-  --mat-sys-surface-container-low:      #{t.$invy-surface};
-  --mat-sys-surface-container:          #{t.$invy-surface};
-  --mat-sys-surface-container-high:     #F4F1EA;
-  --mat-sys-surface-container-highest:  #EDE9E0;
+  // ── Surface / background (pure white) ────────────────────────
+  --mat-sys-background:                 #FFFFFF;
+  --mat-sys-surface:                    #FFFFFF;
+  --mat-sys-surface-dim:                #FFFFFF;
+  --mat-sys-surface-bright:             #FFFFFF;
+  --mat-sys-surface-container-lowest:   #FFFFFF;
+  --mat-sys-surface-container-low:      #FFFFFF;
+  --mat-sys-surface-container:          #FFFFFF;
+  --mat-sys-surface-container-high:     #F7F8FA;
+  --mat-sys-surface-container-highest:  #EFF2F6;
 
   // ── Foreground / text ────────────────────────────────────────
   --mat-sys-on-background:        #{t.$invy-ink};
   --mat-sys-on-surface:           #{t.$invy-ink};
   --mat-sys-on-surface-variant:   #{t.$invy-muted};
 
-  // ── Brand ────────────────────────────────────────────────────
-  --mat-sys-primary:              #{t.$invy-sage-deep};
-  --mat-sys-on-primary:           #{t.$invy-surface};
-  --mat-sys-primary-container:    #{t.$invy-sage-soft};
+  // ── Brand: washed blue ───────────────────────────────────────
+  --mat-sys-primary:              #{t.$invy-blue-deep};
+  --mat-sys-on-primary:           #FFFFFF;
+  --mat-sys-primary-container:    #{t.$invy-blue-soft};
   --mat-sys-on-primary-container: #{t.$invy-ink};
 
   --mat-sys-tertiary:              #{t.$invy-mauve-deep};
-  --mat-sys-on-tertiary:           #{t.$invy-surface};
+  --mat-sys-on-tertiary:           #FFFFFF;
   --mat-sys-tertiary-container:    #{t.$invy-mauve};
   --mat-sys-on-tertiary-container: #{t.$invy-ink};
 

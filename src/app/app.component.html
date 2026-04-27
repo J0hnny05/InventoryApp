@@ -1,11 +1,26 @@
 <mat-sidenav-container class="shell" autosize>
-  <mat-sidenav class="shell__nav" mode="side" opened disableClose>
+  <mat-sidenav
+    #sidenav
+    class="shell__nav"
+    [mode]="isMobile() ? 'over' : 'side'"
+    [opened]="!isMobile()"
+    [disableClose]="!isMobile()"
+  >
     <div class="brand">
       <span class="brand__mark" aria-hidden="true">⌬</span>
       <div class="brand__text">
         <span class="brand__name">Inventory</span>
-        <span class="brand__sub">personal · client-side</span>
       </div>
+      @if (isMobile()) {
+        <button
+          type="button"
+          class="invy-iconbtn brand__close"
+          aria-label="Close menu"
+          (click)="sidenav.close()"
+        >
+          <mat-icon>close</mat-icon>
+        </button>
+      }
     </div>
 
     <nav class="nav" aria-label="Primary">
@@ -15,6 +30,7 @@
           [routerLink]="link.path"
           routerLinkActive="is-active"
           [routerLinkActiveOptions]="{ exact: false }"
+          (click)="onNavigate()"
         >
           <mat-icon class="nav__icon">{{ link.icon }}</mat-icon>
           <span class="nav__label">{{ link.label }}</span>
@@ -23,11 +39,26 @@
     </nav>
 
     <footer class="shell__footer">
-      <span class="invy-eyebrow">v0.1 · local-only</span>
     </footer>
   </mat-sidenav>
 
   <mat-sidenav-content class="shell__content">
+    @if (isMobile()) {
+      <header class="topbar">
+        <button
+          type="button"
+          class="invy-iconbtn"
+          aria-label="Open menu"
+          (click)="sidenav.toggle()"
+        >
+          <mat-icon>menu</mat-icon>
+        </button>
+        <span class="topbar__brand">
+          <span class="topbar__mark" aria-hidden="true">⌬</span>
+          <span>Inventory</span>
+        </span>
+      </header>
+    }
     <router-outlet />
   </mat-sidenav-content>
 </mat-sidenav-container>

@@ -23,3 +23,40 @@ a { color: inherit; text-decoration: none; }
 ::-webkit-scrollbar       { width: 10px; height: 10px; }
 ::-webkit-scrollbar-thumb { background: t.$invy-border-strong; border-radius: t.$invy-radius-pill; }
 ::-webkit-scrollbar-track { background: transparent; }
+
+// ── Form-field cleanup ──────────────────────────────────────────
+// Outlined Material fields ship with a subscript area + a line-ripple
+// that are visible even when subscriptSizing="dynamic", and the
+// notched-outline notch element keeps thin left/right borders that
+// look like vertical seams between the leading edge and the input
+// area. Forcefully hide all of these so the field renders as one
+// continuous rounded box. mat-error still appears inline.
+.mat-mdc-form-field {
+  .mat-mdc-form-field-subscript-wrapper { display: none; }
+  .mdc-line-ripple { display: none; }
+  .mat-mdc-form-field-bottom-align::before { content: none; }
+
+  // Kill the vertical seams on either side of the notch
+  .mdc-notched-outline__notch {
+    border-left: 0 !important;
+    border-right: 0 !important;
+  }
+
+  // Some Material releases give the prefix/suffix wrappers a faint
+  // separator border — drop it.
+  .mat-mdc-form-field-icon-prefix,
+  .mat-mdc-form-field-icon-suffix,
+  .mat-mdc-form-field-text-prefix,
+  .mat-mdc-form-field-text-suffix {
+    border: 0 !important;
+  }
+}
+
+// Native date inputs: calmer calendar picker indicator, no internal divider.
+input[type='date']::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 0.55;
+  filter: grayscale(1);
+}
+input[type='date']::-webkit-datetime-edit-fields-wrapper { padding: 0; }
+input[type='date']::-webkit-datetime-edit-text { padding: 0 2px; }

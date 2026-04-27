@@ -15,25 +15,18 @@
   }
 }
 
-// Card surface (a paper-like flat card with the soft gray border) ─
-.invy-card {
-  background: t.$invy-surface;
-  border: 1px solid t.$invy-border;
-  border-radius: t.$invy-radius-md;
-  padding: t.$invy-space-5;
-  transition: border-color 120ms ease, box-shadow 120ms ease;
+// Card layout helpers (cards themselves are <mat-card appearance="outlined">).
+// .invy-card-padded centres consistent padding without re-styling the surface.
+.invy-card-padded { padding: t.$invy-space-5; }
+.invy-card--inset { background: t.$invy-bg-subtle; }
 
-  &:hover { border-color: t.$invy-border-strong; }
-}
-
-.invy-card--flat   { padding: t.$invy-space-4; }
-.invy-card--inset  { background: t.$invy-paper; }
-
-// Grid for cards / stat cards / item cards ───────────────────────
+// Grid for cards / stat cards / item cards — equal-height by row ─
 .invy-grid {
   display: grid;
-  gap: t.$invy-space-4;
+  gap: t.$invy-space-5;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  grid-auto-rows: 1fr;
+  align-items: stretch;
 }
 
 .invy-grid--wide {
@@ -62,7 +55,7 @@
   gap: t.$invy-space-1;
   padding: 4px 10px;
   border-radius: t.$invy-radius-sm;
-  background: t.$invy-paper;
+  background: t.$invy-bg-subtle;
   border: 1px solid t.$invy-border;
   font-size: 0.75rem;
   font-weight: 500;
@@ -89,5 +82,5 @@
   transition: all 120ms ease;
 
   &:hover { border-color: t.$invy-border-strong; color: t.$invy-ink; }
-  &.is-active { background: t.$invy-sage-soft; border-color: t.$invy-sage-deep; color: t.$invy-ink; }
+  &.is-active { background: t.$invy-blue-soft; border-color: t.$invy-blue-deep; color: t.$invy-blue-deep; }
 }

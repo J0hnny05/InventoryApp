@@ -5,7 +5,7 @@
 <mat-dialog-content class="form-grid">
   <form [formGroup]="form" class="grid gap-3 grid-cols-1 sm:grid-cols-2">
 
-    <mat-form-field appearance="outline" class="sm:col-span-2">
+    <mat-form-field appearance="outline" subscriptSizing="dynamic" class="sm:col-span-2">
       <mat-label>Name</mat-label>
       <input matInput formControlName="name" maxlength="120" autocomplete="off" />
       @if (form.controls.name.invalid && form.controls.name.touched) {
@@ -13,7 +13,7 @@
       }
     </mat-form-field>
 
-    <mat-form-field appearance="outline">
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
       <mat-label>Category</mat-label>
       <mat-select formControlName="categoryId">
         @for (cat of categories(); track cat.id) {
@@ -25,7 +25,7 @@
       }
     </mat-form-field>
 
-    <mat-form-field appearance="outline">
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
       <mat-label>Condition</mat-label>
       <mat-select formControlName="condition">
         <mat-option value="new">New</mat-option>
@@ -34,38 +34,42 @@
       </mat-select>
     </mat-form-field>
 
-    <mat-form-field appearance="outline">
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
       <mat-label>Purchase price</mat-label>
       <input matInput type="number" min="0" step="0.01" formControlName="purchasePrice" />
-      <span matTextPrefix>{{ form.controls.currency.value || 'USD' }}&nbsp;</span>
+      <span matTextSuffix>&nbsp;{{ form.controls.currency.value }}</span>
     </mat-form-field>
 
-    <mat-form-field appearance="outline">
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
       <mat-label>Purchase date</mat-label>
       <input matInput type="date" formControlName="purchaseDate" />
     </mat-form-field>
 
-    <mat-form-field appearance="outline">
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
       <mat-label>Currency</mat-label>
-      <input matInput formControlName="currency" maxlength="3" placeholder="USD" />
+      <mat-select formControlName="currency">
+        @for (code of currencyOptions; track code) {
+          <mat-option [value]="code">{{ code }}</mat-option>
+        }
+      </mat-select>
     </mat-form-field>
 
-    <mat-form-field appearance="outline">
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
       <mat-label>Brand</mat-label>
       <input matInput formControlName="brand" autocomplete="off" />
     </mat-form-field>
 
-    <mat-form-field appearance="outline" class="sm:col-span-2">
+    <mat-form-field appearance="outline" subscriptSizing="dynamic" class="sm:col-span-2">
       <mat-label>Location</mat-label>
       <input matInput formControlName="location" placeholder="e.g. Wardrobe shelf 2" autocomplete="off" />
     </mat-form-field>
 
-    <mat-form-field appearance="outline" class="sm:col-span-2">
+    <mat-form-field appearance="outline" subscriptSizing="dynamic" class="sm:col-span-2">
       <mat-label>Tags (comma-separated)</mat-label>
       <input matInput formControlName="tagsCsv" placeholder="winter, casual, gift" autocomplete="off" />
     </mat-form-field>
 
-    <mat-form-field appearance="outline" class="sm:col-span-2">
+    <mat-form-field appearance="outline" subscriptSizing="dynamic" class="sm:col-span-2">
       <mat-label>Description</mat-label>
       <textarea matInput rows="3" formControlName="description"></textarea>
     </mat-form-field>

@@ -34,14 +34,53 @@ export class InventoryStore {
     [...this.sold()].sort((a, b) => (b.soldAt ?? '').localeCompare(a.soldAt ?? '')),
   );
 
+  /** @deprecated currencies are now mixed; prefer ownedValueByCurrency. */
   readonly totalOwnedValue = computed(() =>
     this.owned().reduce((sum, i) => sum + i.purchasePrice, 0),
   );
 
+  /** Map of currency code -> sum of purchase prices for owned items. */
+  readonly ownedValueByCurrency = computed<ReadonlyMap<string, number>>(() => {
+    const map = new Map<string, number>();
+    for (const it of this.owned()) {
+      map.set(it.currency, (map.get(it.currency) ?? 0) + it.purchasePrice);
+    }
+    return map;
+  });
+
+  /** Map of currency code -> realized P&L for sold items. */
+  readonly realizedProfitByCurrency = computed<ReadonlyMap<string, number>>(() => {
+    const map = new Map<string, number>();
+    for (const it of this.sold()) {
+      map.set(it.currency, (map.get(it.currency) ?? 0) + profitOf(it));
+    }
+    return map;
+  });
+
+  /** Map of currency code -> total sale revenue for sold items. */
+  readonly soldRevenueByCurrency = computed<ReadonlyMap<string, number>>(() => {
+    const map = new Map<string, number>();
+    for (const it of this.sold()) {
+      map.set(it.currency, (map.get(it.currency) ?? 0) + (it.salePrice ?? 0));
+    }
+    return map;
+  });
+
+  /** Map of currency code -> total cost basis for sold items. */
+  readonly soldCostByCurrency = computed<ReadonlyMap<string, number>>(() => {
+    const map = new Map<string, number>();
+    for (const it of this.sold()) {
+      map.set(it.currency, (map.get(it.currency) ?? 0) + it.purchasePrice);
+    }
+    return map;
+  });
+
+  /** @deprecated currencies are now mixed; prefer realizedProfitByCurrency. */
   readonly totalRealizedProfit = computed(() =>
     this.sold().reduce((sum, i) => sum + profitOf(i), 0),
   );
 
+  /** @deprecated currencies are now mixed; prefer soldRevenueByCurrency. */
   readonly totalSoldRevenue = computed(() =>
     this.sold().reduce((sum, i) => sum + (i.salePrice ?? 0), 0),
   );

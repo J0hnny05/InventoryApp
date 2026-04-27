@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { MatCardModule } from '@angular/material/card';
 
 import { InventoryStore } from '../../store/inventory.store';
 import { CategoriesStore } from '../../store/categories.store';
@@ -9,14 +10,14 @@ import { Category } from '../../modules/categories/models/category.model';
 
 import { MoneyPipe } from '../../modules/inventory/pipes/money.pipe';
 import { DaysOwnedPipe } from '../../modules/inventory/pipes/days-owned.pipe';
-import { ProfitClassPipe } from '../../modules/inventory/pipes/profit-class.pipe';
 import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
 import { StatCardComponent } from '../../shared/components/stat-card/stat-card.component';
 import { BarRowComponent } from '../../shared/components/bar-row/bar-row.component';
 
 interface ValueRow {
-  readonly id: string;
+  readonly id: string;          // unique key per (category, currency)
   readonly label: string;
+  readonly currency: string;
   readonly value: number;
   readonly display: string;
   readonly count: number;
@@ -41,12 +42,11 @@ const TOP_LIMIT = 5;
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     RouterLink,
+    MatCardModule,
     PageHeaderComponent,
     StatCardComponent,
     BarRowComponent,
-    MoneyPipe,
     DaysOwnedPipe,
-    ProfitClassPipe,
   ],
   templateUrl: './statistics.page.html',
   styleUrl: './statistics.page.scss',
@@ -60,8 +60,28 @@ export class StatisticsPage {
   readonly defaultCurrency = this.uiStore.defaultCurrency;
 
   readonly ownedCount  = computed(() => this.inventoryStore.owned().length);
-  readonly ownedValue  = this.inventoryStore.totalOwnedValue;
-  readonly totalProfit = this.inventoryStore.totalRealizedProfit;
+
+  readonly ownedValueText = computed(() =>
+    this.formatByCurrency(this.inventoryStore.ownedValueByCurrency()),
+  );
+
+  readonly totalProfitText = computed(() =>
+    this.formatByCurrency(this.inventoryStore.realizedProfitByCurrency(), { signed: true }),
+  );
+
+  readonly profitToneClass = computed(() => {
+    const sums = Array.from(this.inventoryStore.realizedProfitByCurrency().values());
+    if (sums.length === 0) return 'invy-muted';
+    const total = sums.reduce((a, b) => a + b, 0);
+    if (total > 0) return 'invy-positive';
+    if (total < 0) return 'invy-negative';
+    return 'invy-muted';
+  });
+
+  readonly itemsCountHint = computed(() => {
+    const n = this.ownedCount();
+    return `${n} item${n === 1 ? '' : 's'}`;
+  });
 
   readonly totalUses = computed(() =>
     this.inventoryStore.items().reduce((s, i) => s + i.useCount, 0),
@@ -85,32 +105,49 @@ export class StatisticsPage {
     return `${(avg / 365).toFixed(1)}y`;
   });
 
+  /** Owned value broken down per (category, currency) — bars are scaled within
+   *  their own currency group so totals across currencies aren't compared. */
   readonly valueByCategory = computed<readonly ValueRow[]>(() => {
-    const map = new Map<string, { value: number; count: number }>();
+    const map = new Map<string, { value: number; count: number; categoryId: string; currency: string }>();
     for (const it of this.inventoryStore.owned()) {
-      const slot = map.get(it.categoryId) ?? { value: 0, count: 0 };
+      const key = `${it.categoryId}|${it.currency}`;
+      const slot = map.get(key) ?? { value: 0, count: 0, categoryId: it.categoryId, currency: it.currency };
       slot.value += it.purchasePrice;
       slot.count += 1;
-      map.set(it.categoryId, slot);
+      map.set(key, slot);
     }
     const rows: ValueRow[] = [];
-    for (const [id, slot] of map) {
-      const cat = this.categoriesStore.byIdMap().get(id);
+    for (const [key, slot] of map) {
+      const cat = this.categoriesStore.byIdMap().get(slot.categoryId);
       rows.push({
-        id,
+        id: key,
         label: cat?.name ?? 'Uncategorized',
+        currency: slot.currency,
         value: slot.value,
-        display: this.money.transform(slot.value, this.defaultCurrency()),
+        display: this.money.transform(slot.value, slot.currency),
         count: slot.count,
         color: cat?.color ?? '#B8C5C0',
       });
     }
-    return rows.sort((a, b) => b.value - a.value);
+    return rows.sort((a, b) => {
+      // group by currency first (alphabetical), then by value desc within
+      if (a.currency !== b.currency) return a.currency.localeCompare(b.currency);
+      return b.value - a.value;
+    });
   });
 
-  readonly valueMax = computed(() =>
-    this.valueByCategory().reduce((m, r) => Math.max(m, r.value), 0),
-  );
+  /** Per-currency max so each currency's bars are scaled independently. */
+  readonly valueMaxByCurrency = computed<ReadonlyMap<string, number>>(() => {
+    const max = new Map<string, number>();
+    for (const row of this.valueByCategory()) {
+      max.set(row.currency, Math.max(max.get(row.currency) ?? 0, row.value));
+    }
+    return max;
+  });
+
+  valueMaxFor(currency: string): number {
+    return this.valueMaxByCurrency().get(currency) ?? 0;
+  }
 
   readonly usageByCategory = computed<readonly UsageRow[]>(() => {
     const map = new Map<string, { uses: number; itemCount: number; itemsWithUse: number }>();
@@ -158,6 +195,21 @@ export class StatisticsPage {
 
   resolveCategory(id: string): string {
     return this.categoriesStore.resolveName(id);
+  }
+
+  private formatByCurrency(
+    map: ReadonlyMap<string, number>,
+    opts: { signed?: boolean } = {},
+  ): string {
+    if (map.size === 0) return '—';
+    const rows = Array.from(map, ([currency, amount]) => ({ currency, amount }))
+      .sort((a, b) => Math.abs(b.amount) - Math.abs(a.amount));
+    return rows
+      .map((r) => {
+        const formatted = this.money.transform(r.amount, r.currency);
+        return opts.signed && r.amount > 0 ? `+${formatted}` : formatted;
+      })
+      .join('\n');
   }
 
   /** Make the unused Category type explicit so the imported type is preserved

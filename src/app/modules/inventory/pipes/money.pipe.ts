@@ -1,8 +1,9 @@
 import { Pipe, PipeTransform } from '@angular/core';
+import { DEFAULT_CURRENCY } from '../../../store/ui.store';
 
 @Pipe({ name: 'invyMoney', standalone: true })
 export class MoneyPipe implements PipeTransform {
-  transform(value: number | null | undefined, currency: string = 'USD'): string {
+  transform(value: number | null | undefined, currency: string = DEFAULT_CURRENCY): string {
     if (value == null || Number.isNaN(value)) return '—';
     try {
       return new Intl.NumberFormat(undefined, {

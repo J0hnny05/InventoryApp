@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { InventoryItem } from '../../models/inventory-item.model';
@@ -15,6 +16,7 @@ import { DaysOwnedPipe } from '../../pipes/days-owned.pipe';
   imports: [
     RouterLink,
     MatButtonModule,
+    MatCardModule,
     MatIconModule,
     MatMenuModule,
     MoneyPipe,

@@ -13,7 +13,9 @@ import { InventorySort, UiStore } from '../../store/ui.store';
 import { InventoryItem } from '../../modules/inventory/models/inventory-item.model';
 import { Category } from '../../modules/categories/models/category.model';
 
+import { MatCardModule } from '@angular/material/card';
 import { ItemCardComponent } from '../../modules/inventory/components/item-card/item-card.component';
+import { MoneyPipe } from '../../modules/inventory/pipes/money.pipe';
 import {
   ItemFormDialogComponent,
   ItemFormDialogData,
@@ -26,7 +28,6 @@ import {
 } from '../../modules/inventory/dialogs/sell-dialog/sell-dialog.component';
 import { openConfirm } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 import { EmptyStateComponent } from '../../shared/components/empty-state/empty-state.component';
-import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
 
 @Component({
   selector: 'invy-inventory-page',
@@ -34,13 +35,14 @@ import { PageHeaderComponent } from '../../shared/components/page-header/page-he
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     MatButtonModule,
+    MatCardModule,
     MatIconModule,
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
-    PageHeaderComponent,
     EmptyStateComponent,
     ItemCardComponent,
+    MoneyPipe,
   ],
   templateUrl: './inventory.page.html',
   styleUrl: './inventory.page.scss',
@@ -53,6 +55,15 @@ export class InventoryPage {
 
   readonly categories = this.categoriesStore.categories;
   readonly totalOwned = computed(() => this.inventoryStore.owned().length);
+  readonly pinnedCount = computed(() => this.inventoryStore.pinned().length);
+
+  readonly valueRows = computed<readonly { currency: string; amount: number }[]>(() => {
+    const rows = Array.from(this.inventoryStore.ownedValueByCurrency(), ([currency, amount]) => ({
+      currency,
+      amount,
+    }));
+    return rows.sort((a, b) => b.amount - a.amount);
+  });
 
   readonly search = computed(() => this.uiStore.inventoryFilter().search);
   readonly categoryFilter = computed(() => this.uiStore.inventoryFilter().categoryId);

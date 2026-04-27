@@ -5,7 +5,7 @@
 
 /* Map Tailwind theme to the washed design tokens so utility colors match. */
 @theme {
-  --color-paper:        #FAF8F4;
+  --color-paper:        #FFFFFF;
   --color-surface:      #FFFFFF;
   --color-ink:          #2B2A28;
   --color-ink-soft:     #4A4844;
@@ -13,6 +13,9 @@
   --color-faint:        #A39F98;
   --color-border:       #E5E3DD;
   --color-border-strong:#C9C5BC;
+  --color-blue:         #B8C5D8;
+  --color-blue-deep:    #5C7AA3;
+  --color-blue-soft:    #E5ECF4;
   --color-sage:         #B8C5C0;
   --color-sage-deep:    #8FA39C;
   --color-sage-soft:    #DCE3DF;

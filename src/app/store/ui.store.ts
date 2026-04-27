@@ -18,8 +18,11 @@ export interface UiState {
 
 const STORAGE_KEY = 'ui';
 
+/** Default currency (changeable in the Add/Edit item form). */
+export const DEFAULT_CURRENCY = 'MDL';
+
 const INITIAL: UiState = {
-  defaultCurrency: 'USD',
+  defaultCurrency: DEFAULT_CURRENCY,
   theme: 'light',
   inventorySort: 'pinned-recent',
   inventoryFilter: { search: '', categoryId: null },

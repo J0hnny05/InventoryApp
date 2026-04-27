@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, effect, inject, input } f
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog } from '@angular/material/dialog';
 import { firstValueFrom } from 'rxjs';
@@ -10,11 +11,11 @@ import { InventoryStore } from '../../store/inventory.store';
 import { CategoriesStore } from '../../store/categories.store';
 import {
   InventoryItem,
+  daysOwned,
   profitOf,
   roiOf,
 } from '../../modules/inventory/models/inventory-item.model';
 import { MoneyPipe } from '../../modules/inventory/pipes/money.pipe';
-import { DaysOwnedPipe } from '../../modules/inventory/pipes/days-owned.pipe';
 import { ProfitClassPipe } from '../../modules/inventory/pipes/profit-class.pipe';
 import { EmptyStateComponent } from '../../shared/components/empty-state/empty-state.component';
 import { openConfirm } from '../../shared/components/confirm-dialog/confirm-dialog.component';
@@ -37,10 +38,10 @@ import {
     CommonModule,
     RouterLink,
     MatButtonModule,
+    MatCardModule,
     MatIconModule,
     EmptyStateComponent,
     MoneyPipe,
-    DaysOwnedPipe,
     ProfitClassPipe,
   ],
   templateUrl: './item-detail.page.html',
@@ -81,6 +82,10 @@ export class ItemDetailPage {
 
   roi(it: InventoryItem): number {
     return roiOf(it);
+  }
+
+  daysOwnedOf(it: InventoryItem): number {
+    return daysOwned(it);
   }
 
   formatRelative(iso: string): string {
