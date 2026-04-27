@@ -4,6 +4,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   selector: 'invy-statistics-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `<h1>Statistics</h1>`,
+  templateUrl: './statistics.page.html',
+  styleUrl: './statistics.page.scss',
 })
 export class StatisticsPage {}

@@ -4,6 +4,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   selector: 'invy-inventory-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `<h1>Inventory</h1>`,
+  templateUrl: './inventory.page.html',
+  styleUrl: './inventory.page.scss',
 })
 export class InventoryPage {}

@@ -1,0 +1,103 @@
+@use 'tokens' as t;
+
+:host, .shell {
+  display: block;
+  height: 100%;
+}
+
+.shell__nav {
+  width: t.$invy-sidenav-width;
+  border-right: 1px solid t.$invy-border;
+  background: t.$invy-surface;
+  padding: t.$invy-space-5 14px t.$invy-space-4;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: t.$invy-space-3;
+  padding: t.$invy-space-2 t.$invy-space-2 14px;
+  border-bottom: 1px solid t.$invy-border;
+}
+
+.brand__mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: t.$invy-radius-md;
+  background: t.$invy-sage-soft;
+  color: t.$invy-ink;
+  font-size: 1.4rem;
+}
+
+.brand__text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.brand__name {
+  font-weight: 600;
+  font-size: 1.05rem;
+  letter-spacing: -0.01em;
+}
+
+.brand__sub {
+  font-size: 0.7rem;
+  color: t.$invy-muted;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.nav__link {
+  display: flex;
+  align-items: center;
+  gap: t.$invy-space-3;
+  padding: 10px t.$invy-space-3;
+  border-radius: t.$invy-radius-sm;
+  color: t.$invy-muted;
+  font-size: 0.92rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 120ms ease, color 120ms ease;
+
+  &:hover {
+    background: #F4F1EA;
+    color: t.$invy-ink;
+  }
+
+  &.is-active {
+    background: t.$invy-sage-soft;
+    color: t.$invy-ink;
+  }
+}
+
+.nav__icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+}
+
+.shell__footer {
+  margin-top: auto;
+  padding: t.$invy-space-3 t.$invy-space-2;
+}
+
+.shell__content {
+  background: t.$invy-paper;
+  min-height: 100vh;
+}
+
+@media (max-width: 720px) {
+  .shell__nav { width: 200px; }
+}

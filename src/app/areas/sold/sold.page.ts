@@ -4,6 +4,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   selector: 'invy-sold-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `<h1>Sold</h1>`,
+  templateUrl: './sold.page.html',
+  styleUrl: './sold.page.scss',
 })
 export class SoldPage {}

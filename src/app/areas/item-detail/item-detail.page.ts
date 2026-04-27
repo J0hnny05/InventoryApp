@@ -4,6 +4,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   selector: 'invy-item-detail-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `<h1>Item detail</h1>`,
+  templateUrl: './item-detail.page.html',
+  styleUrl: './item-detail.page.scss',
 })
 export class ItemDetailPage {}

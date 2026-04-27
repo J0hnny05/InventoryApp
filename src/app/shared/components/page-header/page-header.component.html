@@ -1,0 +1,14 @@
+<header class="page-header">
+  <div class="page-header__text">
+    @if (eyebrow()) {
+      <span class="invy-eyebrow">{{ eyebrow() }}</span>
+    }
+    <h1 class="page-header__title">{{ title() }}</h1>
+    @if (subtitle()) {
+      <p class="page-header__subtitle invy-muted">{{ subtitle() }}</p>
+    }
+  </div>
+  <div class="page-header__actions">
+    <ng-content />
+  </div>
+</header>

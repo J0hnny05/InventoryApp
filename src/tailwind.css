@@ -1,0 +1,34 @@
+@import "tailwindcss";
+
+@source "./app";
+@source "./index.html";
+
+/* Map Tailwind theme to the washed design tokens so utility colors match. */
+@theme {
+  --color-paper:        #FAF8F4;
+  --color-surface:      #FFFFFF;
+  --color-ink:          #2B2A28;
+  --color-ink-soft:     #4A4844;
+  --color-muted:        #6E6B66;
+  --color-faint:        #A39F98;
+  --color-border:       #E5E3DD;
+  --color-border-strong:#C9C5BC;
+  --color-sage:         #B8C5C0;
+  --color-sage-deep:    #8FA39C;
+  --color-sage-soft:    #DCE3DF;
+  --color-mauve:        #C8B5C4;
+  --color-mauve-deep:   #9E8C9C;
+  --color-sand:         #D8CFBE;
+  --color-success:      #7FA88A;
+  --color-success-bg:   #E5EFE8;
+  --color-danger:       #C68A8A;
+  --color-danger-bg:    #F2E2E2;
+  --color-warning:      #D9B97E;
+  --color-info:         #9CB3C8;
+
+  --radius-md:   14px;
+  --radius-lg:   22px;
+  --radius-pill: 999px;
+
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
