@@ -38,6 +38,5 @@ p { margin: 0; line-height: 1.55; }
 .invy-positive { color: t.$invy-success; }
 .invy-negative { color: t.$invy-danger; }
 
-.material-symbols-outlined {
-  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-}
+// mat-icon uses the classic Material Icons font (loaded via index.html)
+// — the .material-icons class is applied by the directive automatically.
