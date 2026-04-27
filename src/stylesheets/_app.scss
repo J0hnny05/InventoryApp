@@ -1,6 +1,25 @@
-// Stylesheet entrypoint. Themed in Commit 2.
+@use 'theme';
+@use 'typography';
+@use 'utilities';
+@use 'tokens' as t;
+
 html, body {
   height: 100%;
   margin: 0;
-  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  background: t.$invy-paper;
+  color: t.$invy-ink;
 }
+
+* { box-sizing: border-box; }
+
+a { color: inherit; text-decoration: none; }
+
+::selection {
+  background: t.$invy-sage-soft;
+  color: t.$invy-ink;
+}
+
+// Scrollbar — washed and quiet
+::-webkit-scrollbar       { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb { background: t.$invy-border-strong; border-radius: t.$invy-radius-pill; }
+::-webkit-scrollbar-track { background: transparent; }

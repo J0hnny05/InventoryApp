@@ -1,0 +1,93 @@
+@use 'tokens' as t;
+
+// Page scaffolding ───────────────────────────────────────────────
+.invy-page {
+  display: flex;
+  flex-direction: column;
+  gap: t.$invy-space-6;
+  padding: t.$invy-space-8 t.$invy-space-10;
+  max-width: t.$invy-content-max;
+  margin: 0 auto;
+
+  @media (max-width: 720px) {
+    padding: t.$invy-space-5 t.$invy-space-4;
+    gap: t.$invy-space-4;
+  }
+}
+
+// Card surface (a paper-like flat card with the soft gray border) ─
+.invy-card {
+  background: t.$invy-surface;
+  border: 1px solid t.$invy-border;
+  border-radius: t.$invy-radius-md;
+  padding: t.$invy-space-5;
+  transition: border-color 120ms ease, box-shadow 120ms ease;
+
+  &:hover { border-color: t.$invy-border-strong; }
+}
+
+.invy-card--flat   { padding: t.$invy-space-4; }
+.invy-card--inset  { background: t.$invy-paper; }
+
+// Grid for cards / stat cards / item cards ───────────────────────
+.invy-grid {
+  display: grid;
+  gap: t.$invy-space-4;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+}
+
+.invy-grid--wide {
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+
+.invy-row {
+  display: flex;
+  gap: t.$invy-space-3;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.invy-stack {
+  display: flex;
+  flex-direction: column;
+  gap: t.$invy-space-3;
+}
+
+.invy-spacer { flex: 1 1 auto; }
+
+// Pills / chips (used for tags, categories, status) ──────────────
+.invy-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: t.$invy-space-1;
+  padding: 4px 10px;
+  border-radius: t.$invy-radius-sm;
+  background: t.$invy-paper;
+  border: 1px solid t.$invy-border;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: t.$invy-ink-soft;
+  line-height: 1.3;
+
+  &--success { background: t.$invy-success-bg; border-color: t.$invy-success; color: t.$invy-success; }
+  &--danger  { background: t.$invy-danger-bg;  border-color: t.$invy-danger;  color: t.$invy-danger;  }
+  &--ghost   { background: transparent; }
+}
+
+// Compact button-like icon container for use/pin/etc
+.invy-iconbtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: t.$invy-radius-sm;
+  border: 1px solid t.$invy-border;
+  background: t.$invy-surface;
+  color: t.$invy-ink-soft;
+  cursor: pointer;
+  transition: all 120ms ease;
+
+  &:hover { border-color: t.$invy-border-strong; color: t.$invy-ink; }
+  &.is-active { background: t.$invy-sage-soft; border-color: t.$invy-sage-deep; color: t.$invy-ink; }
+}

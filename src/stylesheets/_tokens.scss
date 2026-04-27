@@ -1,0 +1,56 @@
+// Design tokens — single source of truth for the washed palette,
+// shape, spacing, and elevation. Theme + utilities consume these.
+
+// ── Washed palette ─────────────────────────────────────────────
+$invy-sage:        #B8C5C0;  // primary (calm sage)
+$invy-sage-deep:   #8FA39C;
+$invy-sage-soft:   #DCE3DF;
+
+$invy-mauve:       #C8B5C4;  // tertiary (dusty mauve)
+$invy-mauve-deep:  #9E8C9C;
+
+$invy-sand:        #D8CFBE;  // surface tint (linen)
+$invy-paper:       #FAF8F4;  // app background
+$invy-surface:     #FFFFFF;  // card surface
+
+$invy-ink:         #2B2A28;  // primary text
+$invy-ink-soft:    #4A4844;
+$invy-muted:       #6E6B66;  // secondary text
+$invy-faint:       #A39F98;  // disabled / hint
+
+$invy-border:      #E5E3DD;  // soft uniform gray border
+$invy-border-strong: #C9C5BC;
+
+$invy-success:     #7FA88A;  // washed green (positive P&L)
+$invy-success-bg:  #E5EFE8;
+$invy-danger:      #C68A8A;  // washed terracotta (negative P&L)
+$invy-danger-bg:   #F2E2E2;
+$invy-warning:     #D9B97E;  // washed amber
+$invy-info:        #9CB3C8;  // washed slate-blue
+
+// ── Shape ──────────────────────────────────────────────────────
+$invy-radius-xs: 6px;
+$invy-radius-sm: 10px;
+$invy-radius-md: 14px;   // cards, dialogs, inputs
+$invy-radius-lg: 22px;   // hero sections, page header
+$invy-radius-pill: 999px;
+
+// ── Spacing (8pt grid) ─────────────────────────────────────────
+$invy-space-1:  4px;
+$invy-space-2:  8px;
+$invy-space-3:  12px;
+$invy-space-4:  16px;
+$invy-space-5:  20px;
+$invy-space-6:  24px;
+$invy-space-8:  32px;
+$invy-space-10: 40px;
+$invy-space-12: 48px;
+
+// ── Elevation (very soft, almost flat) ─────────────────────────
+$invy-shadow-1: 0 1px 2px rgba(43, 42, 40, 0.04);
+$invy-shadow-2: 0 4px 12px rgba(43, 42, 40, 0.06);
+$invy-shadow-3: 0 8px 24px rgba(43, 42, 40, 0.08);
+
+// ── Layout ─────────────────────────────────────────────────────
+$invy-sidenav-width: 240px;
+$invy-content-max:   1200px;

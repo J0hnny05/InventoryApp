@@ -1,0 +1,85 @@
+@use '@angular/material' as mat;
+@use 'tokens' as t;
+
+// Angular Material 20 M3 theme. We pick the closest built-in palettes
+// and then override system tokens to enforce the washed/linen look.
+html {
+  color-scheme: light;
+
+  @include mat.theme((
+    color: (
+      theme-type: light,
+      primary: mat.$green-palette,
+      tertiary: mat.$violet-palette,
+    ),
+    typography: 'Inter, system-ui, sans-serif',
+    density: 0,
+  ));
+
+  // ── Surface / background ─────────────────────────────────────
+  --mat-sys-background:                 #{t.$invy-paper};
+  --mat-sys-surface:                    #{t.$invy-paper};
+  --mat-sys-surface-dim:                #{t.$invy-paper};
+  --mat-sys-surface-bright:             #{t.$invy-surface};
+  --mat-sys-surface-container-lowest:   #{t.$invy-surface};
+  --mat-sys-surface-container-low:      #{t.$invy-surface};
+  --mat-sys-surface-container:          #{t.$invy-surface};
+  --mat-sys-surface-container-high:     #F4F1EA;
+  --mat-sys-surface-container-highest:  #EDE9E0;
+
+  // ── Foreground / text ────────────────────────────────────────
+  --mat-sys-on-background:        #{t.$invy-ink};
+  --mat-sys-on-surface:           #{t.$invy-ink};
+  --mat-sys-on-surface-variant:   #{t.$invy-muted};
+
+  // ── Brand ────────────────────────────────────────────────────
+  --mat-sys-primary:              #{t.$invy-sage-deep};
+  --mat-sys-on-primary:           #{t.$invy-surface};
+  --mat-sys-primary-container:    #{t.$invy-sage-soft};
+  --mat-sys-on-primary-container: #{t.$invy-ink};
+
+  --mat-sys-tertiary:              #{t.$invy-mauve-deep};
+  --mat-sys-on-tertiary:           #{t.$invy-surface};
+  --mat-sys-tertiary-container:    #{t.$invy-mauve};
+  --mat-sys-on-tertiary-container: #{t.$invy-ink};
+
+  // ── Outline (the gray border the user wants everywhere) ──────
+  --mat-sys-outline:              #{t.$invy-border-strong};
+  --mat-sys-outline-variant:      #{t.$invy-border};
+
+  // ── Shape (rounded corners) ──────────────────────────────────
+  --mat-sys-corner-extra-small:   #{t.$invy-radius-xs};
+  --mat-sys-corner-small:         #{t.$invy-radius-sm};
+  --mat-sys-corner-medium:        #{t.$invy-radius-md};
+  --mat-sys-corner-large:         #{t.$invy-radius-lg};
+  --mat-sys-corner-extra-large:   #{t.$invy-radius-lg};
+
+  // ── Component-specific token overrides ───────────────────────
+
+  // Cards: flat, paper-like, with the soft gray border
+  --mdc-outlined-card-container-shape: #{t.$invy-radius-md};
+  --mdc-outlined-card-outline-color:   #{t.$invy-border};
+  --mdc-outlined-card-outline-width:   1px;
+
+  // Buttons: pill primary buttons for the unique flair, square FABs more rounded
+  --mdc-filled-button-container-shape:    #{t.$invy-radius-pill};
+  --mdc-protected-button-container-shape: #{t.$invy-radius-pill};
+  --mdc-text-button-container-shape:      #{t.$invy-radius-pill};
+  --mdc-outlined-button-container-shape:  #{t.$invy-radius-pill};
+  --mdc-fab-container-shape:              #{t.$invy-radius-md};
+
+  // Form fields: outlined, soft border, medium rounded
+  --mdc-outlined-text-field-container-shape: #{t.$invy-radius-md};
+  --mdc-outlined-text-field-outline-color:   #{t.$invy-border-strong};
+
+  // Chips: rounded but not full pill — feels deliberate, not generic
+  --mdc-chip-container-shape-radius: #{t.$invy-radius-sm};
+
+  // Dialog: medium-large rounded
+  --mdc-dialog-container-shape: #{t.$invy-radius-lg};
+
+  // Sidenav
+  --mat-sidenav-container-background-color: #{t.$invy-surface};
+  --mat-sidenav-container-divider-color:    #{t.$invy-border};
+  --mat-sidenav-container-shape:            0;
+}
