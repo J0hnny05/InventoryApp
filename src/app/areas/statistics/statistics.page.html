@@ -7,9 +7,9 @@
 
   <div class="invy-grid">
     <invy-stat-card
-      label="Total inventory"
+      label="Total inventory (EUR)"
       [value]="ownedValueText()"
-      [hint]="itemsCountHint()"
+      [hint]="ownedValueHint()"
     />
     <invy-stat-card
       label="Recorded uses"
@@ -24,7 +24,7 @@
     <invy-stat-card
       label="Avg time owned"
       [value]="avgDaysOwned()"
-      hint="across owned items"
+      [hint]="avgDaysOwnedHint()"
     />
   </div>
 
@@ -32,25 +32,61 @@
     <mat-card appearance="outlined" class="stats-card">
       <mat-card-content class="stats-card__inner">
         <header class="stats-card__head">
-          <h3 class="text-base font-semibold tracking-tight">Value by category</h3>
-          <span class="invy-eyebrow">{{ ownedCount() }} items</span>
+          <div class="stats-card__head-text">
+            <h3 class="text-base font-semibold tracking-tight">Value by category</h3>
+            @if (ratesReady() && ratesUpdatedLabel()) {
+              <span class="invy-eyebrow">In EUR · rates {{ ratesUpdatedLabel() }}</span>
+            } @else {
+              <span class="invy-eyebrow">In EUR</span>
+            }
+          </div>
+          <button
+            type="button"
+            class="invy-iconbtn"
+            (click)="refreshRates()"
+            [disabled]="ratesLoading()"
+            title="Refresh exchange rates"
+            aria-label="Refresh exchange rates"
+          >
+            <mat-icon [class.spin]="ratesLoading()">refresh</mat-icon>
+          </button>
         </header>
 
-        @if (valueByCategory().length === 0) {
+        @if (!ratesReady() && ratesLoading()) {
+          <p class="invy-muted text-sm py-2">Fetching today's exchange rates…</p>
+        } @else if (!ratesReady()) {
+          <div class="rates-error">
+            <p class="invy-muted text-sm">{{ ratesError() ?? 'Exchange rates unavailable.' }}</p>
+            <button matButton (click)="refreshRates()" [disabled]="ratesLoading()">
+              <mat-icon>refresh</mat-icon>
+              <span>Retry</span>
+            </button>
+          </div>
+        } @else if (valueByCategoryEur().length === 0) {
           <p class="invy-muted text-sm py-2">Add items to see this breakdown.</p>
         } @else {
           <div class="bars">
-            @for (row of valueByCategory(); track row.id) {
+            @for (row of valueByCategoryEur(); track row.id) {
               <invy-bar-row
-                [label]="row.label + ' · ' + row.currency"
+                [label]="row.label"
                 [value]="row.value"
-                [max]="valueMaxFor(row.currency)"
-                [display]="row.display"
-                [sub]="row.count + ' item' + (row.count === 1 ? '' : 's')"
+                [max]="valueTotalEur()"
+                [display]="row.display + '  ·  ' + (shareFor(row.id) | number: '1.0-1') + '%'"
+                [sub]="
+                  row.count + ' item' + (row.count === 1 ? '' : 's') +
+                  (row.missing > 0 ? ' · ' + row.missing + ' not convertible' : '')
+                "
                 [color]="row.color"
               />
             }
           </div>
+          <div class="value-total invy-numeric">
+            <span class="invy-eyebrow">Total</span>
+            <strong>{{ valueGrandTotalEur() }}</strong>
+          </div>
+          @if (ratesError()) {
+            <p class="invy-muted text-xs mt-2">{{ ratesError() }}</p>
+          }
         }
       </mat-card-content>
     </mat-card>

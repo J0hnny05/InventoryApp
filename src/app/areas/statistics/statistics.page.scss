@@ -22,9 +22,49 @@
 .stats-card__head {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: flex-start;
+  gap: t.$invy-space-3;
   margin-bottom: t.$invy-space-4;
 }
+
+.stats-card__head-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.rates-error {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: t.$invy-space-3;
+  padding: t.$invy-space-3 t.$invy-space-4;
+  background: t.$invy-bg-subtle;
+  border: 1px dashed t.$invy-border-strong;
+  border-radius: t.$invy-radius-md;
+}
+
+.value-total {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: t.$invy-space-3;
+  padding-top: t.$invy-space-3;
+  margin-top: t.$invy-space-3;
+  border-top: 1px solid t.$invy-border;
+
+  strong {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: t.$invy-ink;
+  }
+}
+
+@keyframes invy-spin {
+  to { transform: rotate(360deg); }
+}
+
+.spin { animation: invy-spin 900ms linear infinite; }
 
 .bars {
   display: flex;
