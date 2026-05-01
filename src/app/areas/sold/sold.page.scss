@@ -3,7 +3,7 @@
 :host { display: block; }
 
 .sold-card--inset {
-  background: t.$invy-bg-subtle !important;
+  background: var(--c-bg-subtle) !important;
 }
 
 .sold-card--table ::ng-deep .mat-mdc-card-content {
@@ -28,7 +28,7 @@
   gap: t.$invy-space-3;
   align-items: center;
   padding: 8px 0;
-  border-top: 1px solid t.$invy-border;
+  border-top: 1px solid var(--c-border);
 
   &:first-child { border-top: 0; }
 }
@@ -56,17 +56,17 @@
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: t.$invy-muted;
-  background: t.$invy-bg-subtle;
-  border-bottom: 1px solid t.$invy-border;
+  color: var(--c-muted);
+  background: var(--c-bg-subtle);
+  border-bottom: 1px solid var(--c-border);
 }
 
 .sold-table__row {
-  border-bottom: 1px solid t.$invy-border;
+  border-bottom: 1px solid var(--c-border);
   color: inherit;
   transition: background 120ms ease;
 
-  &:hover { background: t.$invy-bg-subtle; }
+  &:hover { background: var(--c-bg-subtle); }
   &:last-child { border-bottom: 0; }
 }
 

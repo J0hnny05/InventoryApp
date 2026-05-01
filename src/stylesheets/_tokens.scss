@@ -57,6 +57,40 @@ $invy-shadow-1: 0 1px 2px rgba(43, 42, 40, 0.04);
 $invy-shadow-2: 0 4px 12px rgba(43, 42, 40, 0.06);
 $invy-shadow-3: 0 8px 24px rgba(43, 42, 40, 0.08);
 
+// ── Dark Mode Palette ──────────────────────────────────────────
+// Blacker backgrounds and lighter text for stronger contrast.
+$invy-dark-bg:           #0B0B0C;  // near-black app background
+$invy-dark-surface:      #141416;  // card surface
+$invy-dark-surface-high: #1C1C1F;  // higher elevation
+$invy-dark-bg-subtle:    #18181B;  // subtle nested panels
+
+$invy-dark-ink:          #FFFFFF;  // primary text (pure white)
+$invy-dark-ink-soft:     #E8E8EA;  // secondary text (near-white)
+$invy-dark-muted:        #BFBFC4;  // tertiary text (still clearly readable)
+$invy-dark-faint:        #8A8A90;  // disabled / hint
+
+$invy-dark-border:       #2A2A2D;  // soft border
+$invy-dark-border-strong:#3D3D42;  // stronger border
+
+// Accent colors remain vibrant in dark mode but slightly adjusted
+$invy-dark-blue:         #A5B8D0;  // slightly brighter soft blue
+$invy-dark-blue-deep:    #7A96BC;  // primary brand in dark mode
+$invy-dark-blue-soft:    #2A3542;  // dark blue background tint
+
+$invy-dark-sage:         #A8BCB8;
+$invy-dark-sage-deep:    #9FB3AD;
+$invy-dark-sage-soft:    #2A3230;
+
+$invy-dark-mauve:        #BDA8B8;
+$invy-dark-mauve-deep:   #A895A3;
+
+$invy-dark-success:      #88B594;  // slightly brighter washed green
+$invy-dark-success-bg:   #232B25;
+$invy-dark-danger:       #D19696;  // slightly brighter terracotta
+$invy-dark-danger-bg:    #2E2424;
+$invy-dark-warning:      #E5C78A;
+$invy-dark-info:         #A5BECF;
+
 // ── Layout ─────────────────────────────────────────────────────
 $invy-sidenav-width: 240px;
 $invy-content-max:   1200px;

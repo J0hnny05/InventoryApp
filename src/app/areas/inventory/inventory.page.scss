@@ -21,6 +21,14 @@
     opacity: 0.35;
     pointer-events: none;
   }
+
+  :host-context(.dark-theme) & {
+    background: linear-gradient(135deg, t.$invy-dark-blue-soft 0%, t.$invy-dark-surface 55%, t.$invy-dark-bg-subtle 100%);
+
+    &::after {
+      background-image: radial-gradient(circle, t.$invy-dark-blue 1px, transparent 1.4px);
+    }
+  }
 }
 
 .inv-hero__inner {
@@ -51,6 +59,10 @@
   letter-spacing: -0.025em;
   line-height: 1.05;
   color: t.$invy-ink;
+
+  :host-context(.dark-theme) & {
+    color: t.$invy-dark-ink;
+  }
 }
 
 .inv-hero__stats {
@@ -71,6 +83,10 @@
   font-weight: 600;
   color: t.$invy-ink;
   letter-spacing: -0.01em;
+
+  :host-context(.dark-theme) & {
+    color: t.$invy-dark-ink;
+  }
 }
 
 .inv-hero__statLabel {
@@ -80,6 +96,10 @@
   text-transform: uppercase;
   color: t.$invy-muted;
   margin-top: 2px;
+
+  :host-context(.dark-theme) & {
+    color: t.$invy-dark-muted;
+  }
 }
 
 .inv-hero__stat--values { gap: 6px; }
@@ -102,6 +122,12 @@
   font-weight: 600;
   letter-spacing: -0.01em;
   color: t.$invy-ink;
+
+  :host-context(.dark-theme) & {
+    background: t.$invy-dark-surface;
+    border-color: t.$invy-dark-border;
+    color: t.$invy-dark-ink;
+  }
 }
 
 .inv-hero__actions {
@@ -136,6 +162,12 @@
       background: t.$invy-blue-soft;
       border-color: t.$invy-blue-deep;
       color: t.$invy-blue-deep;
+    }
+
+    :host-context(.dark-theme) &.is-on {
+      background: t.$invy-dark-blue-soft;
+      border-color: t.$invy-dark-blue-deep;
+      color: t.$invy-dark-blue;
     }
   }
 }

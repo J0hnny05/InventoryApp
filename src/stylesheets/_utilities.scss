@@ -18,7 +18,13 @@
 // Card layout helpers (cards themselves are <mat-card appearance="outlined">).
 // .invy-card-padded centres consistent padding without re-styling the surface.
 .invy-card-padded { padding: t.$invy-space-5; }
-.invy-card--inset { background: t.$invy-bg-subtle; }
+.invy-card--inset {
+  background: t.$invy-bg-subtle;
+
+  html.dark-theme & {
+    background: t.$invy-dark-bg-subtle;
+  }
+}
 
 // Grid for cards / stat cards / item cards — equal-height by row ─
 .invy-grid {
@@ -65,6 +71,17 @@
   &--success { background: t.$invy-success-bg; border-color: t.$invy-success; color: t.$invy-success; }
   &--danger  { background: t.$invy-danger-bg;  border-color: t.$invy-danger;  color: t.$invy-danger;  }
   &--ghost   { background: transparent; }
+
+  // Dark mode
+  html.dark-theme & {
+    background: t.$invy-dark-bg-subtle;
+    border-color: t.$invy-dark-border;
+    color: t.$invy-dark-ink-soft;
+
+    &--success { background: t.$invy-dark-success-bg; border-color: t.$invy-dark-success; color: t.$invy-dark-success; }
+    &--danger  { background: t.$invy-dark-danger-bg;  border-color: t.$invy-dark-danger;  color: t.$invy-dark-danger;  }
+    &--ghost   { background: transparent; }
+  }
 }
 
 // Compact button-like icon container for use/pin/etc
@@ -83,4 +100,14 @@
 
   &:hover { border-color: t.$invy-border-strong; color: t.$invy-ink; }
   &.is-active { background: t.$invy-blue-soft; border-color: t.$invy-blue-deep; color: t.$invy-blue-deep; }
+
+  // Dark mode
+  html.dark-theme & {
+    border-color: t.$invy-dark-border;
+    background: t.$invy-dark-surface;
+    color: t.$invy-dark-ink-soft;
+
+    &:hover { border-color: t.$invy-dark-border-strong; color: t.$invy-dark-ink; }
+    &.is-active { background: t.$invy-dark-blue-soft; border-color: t.$invy-dark-blue-deep; color: t.$invy-dark-blue-deep; }
+  }
 }

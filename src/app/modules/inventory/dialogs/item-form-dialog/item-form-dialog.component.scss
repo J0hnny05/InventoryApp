@@ -1,3 +1,11 @@
 :host { display: block; min-width: min(560px, 90vw); }
 
-.form-grid { padding-top: 4px; }
+// Give the form a little extra row gap so the dynamic mat-error
+// subscript area never collides with the next field.
+.form-grid {
+  padding-top: 4px;
+
+  form {
+    row-gap: 18px !important;
+  }
+}

@@ -8,11 +8,16 @@
 .shell__nav {
   width: t.$invy-sidenav-width;
   border-right: 1px solid t.$invy-border;
-  background: t.$invy-surface;
+  background: t.$invy-surface !important;
   padding: t.$invy-space-5 14px t.$invy-space-4;
   display: flex;
   flex-direction: column;
   gap: 18px;
+
+  :host-context(.dark-theme) & {
+    border-right-color: t.$invy-dark-border !important;
+    background: t.$invy-dark-surface !important;
+  }
 }
 
 .brand {
@@ -21,6 +26,10 @@
   gap: t.$invy-space-3;
   padding: t.$invy-space-2 t.$invy-space-2 14px;
   border-bottom: 1px solid t.$invy-border;
+
+  :host-context(.dark-theme) & {
+    border-bottom-color: t.$invy-dark-border;
+  }
 }
 
 .brand__mark {
@@ -33,6 +42,11 @@
   background: t.$invy-blue-soft;
   color: t.$invy-blue-deep;
   font-size: 1.4rem;
+
+  :host-context(.dark-theme) & {
+    background: t.$invy-dark-blue-soft;
+    color: t.$invy-dark-blue;
+  }
 }
 
 .brand__text {
@@ -76,6 +90,20 @@
     background: t.$invy-blue-soft;
     color: t.$invy-blue-deep;
   }
+
+  :host-context(.dark-theme) & {
+    color: t.$invy-dark-muted;
+
+    &:hover {
+      background: t.$invy-dark-bg-subtle;
+      color: t.$invy-dark-ink;
+    }
+
+    &.is-active {
+      background: t.$invy-dark-blue-soft;
+      color: t.$invy-dark-blue;
+    }
+  }
 }
 
 .nav__icon {
@@ -88,11 +116,22 @@
 .shell__footer {
   margin-top: auto;
   padding: t.$invy-space-3 t.$invy-space-2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.theme-toggle {
+  // Inherits all styles from .invy-iconbtn
 }
 
 .shell__content {
-  background: t.$invy-paper;
+  background: t.$invy-paper !important;
   min-height: 100vh;
+
+  :host-context(.dark-theme) & {
+    background: t.$invy-dark-bg !important;
+  }
 }
 
 // ── Mobile topbar ────────────────────────────────────────────────
@@ -101,11 +140,16 @@
   align-items: center;
   gap: t.$invy-space-3;
   padding: t.$invy-space-3 t.$invy-space-4;
-  background: t.$invy-surface;
+  background: t.$invy-surface !important;
   border-bottom: 1px solid t.$invy-border;
   position: sticky;
   top: 0;
   z-index: 5;
+
+  :host-context(.dark-theme) & {
+    background: t.$invy-dark-surface !important;
+    border-bottom-color: t.$invy-dark-border !important;
+  }
 }
 
 .topbar__brand {
@@ -126,4 +170,9 @@
   color: t.$invy-blue-deep;
   border-radius: t.$invy-radius-sm;
   font-size: 1rem;
+
+  :host-context(.dark-theme) & {
+    background: t.$invy-dark-blue-soft;
+    color: t.$invy-dark-blue;
+  }
 }

@@ -6,6 +6,10 @@
 .hero {
   overflow: hidden;
   background: linear-gradient(135deg, t.$invy-blue-soft 0%, t.$invy-surface 60%, t.$invy-bg-subtle 100%);
+
+  :host-context(.dark-theme) & {
+    background: linear-gradient(135deg, t.$invy-dark-blue-soft 0%, t.$invy-dark-surface 60%, t.$invy-dark-bg-subtle 100%);
+  }
 }
 
 .hero__inner {
@@ -27,17 +31,17 @@
   font-weight: 600;
   letter-spacing: -0.025em;
   line-height: 1.1;
-  color: t.$invy-ink;
+  color: var(--c-ink);
 }
 
 .hero__lead {
-  color: t.$invy-ink-soft;
+  color: var(--c-ink-soft);
   font-size: 0.98rem;
   line-height: 1.5;
   max-width: 48ch;
 
   strong {
-    color: t.$invy-ink;
+    color: var(--c-ink);
     font-weight: 600;
   }
 }
@@ -54,6 +58,13 @@
   max-width: 320px;
   height: auto;
   justify-self: end;
+
+  // The SVG illustration uses hardcoded light fills. In dark mode,
+  // flip its luminance with invert+hue-rotate so it reads on the dark
+  // hero without rewriting every fill in the SVG.
+  :host-context(.dark-theme) & {
+    filter: invert(0.92) hue-rotate(180deg);
+  }
 }
 
 @media (max-width: 760px) {
@@ -104,7 +115,7 @@
   gap: t.$invy-space-3;
   align-items: center;
   padding: 10px 0;
-  border-top: 1px solid t.$invy-border;
+  border-top: 1px solid var(--c-border);
 
   &:first-child { border-top: 0; }
 }
@@ -117,4 +128,6 @@
 
   &:hover strong { color: t.$invy-blue-deep; }
   strong { transition: color 120ms ease; }
+
+  :host-context(.dark-theme) &:hover strong { color: t.$invy-dark-blue; }
 }

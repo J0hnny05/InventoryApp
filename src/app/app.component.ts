@@ -1,9 +1,11 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
+import { DOCUMENT } from '@angular/common';
+import { UiStore } from './store/ui.store';
 
 interface NavLink {
   readonly path: string;
@@ -27,6 +29,8 @@ interface NavLink {
 })
 export class AppComponent {
   private readonly breakpoints = inject(BreakpointObserver);
+  private readonly uiStore = inject(UiStore);
+  private readonly document = inject(DOCUMENT);
 
   readonly links: readonly NavLink[] = [
     { path: '/dashboard',  label: 'Dashboard',  icon: 'dashboard' },
@@ -41,6 +45,27 @@ export class AppComponent {
   );
 
   readonly isMobile = computed(() => this.handset().matches);
+  readonly isDark = computed(() => this.uiStore.theme() === 'dark');
+
+  constructor() {
+    // Apply theme class to <html> element whenever theme changes
+    effect(() => {
+      const isDark = this.isDark();
+      const htmlElement = this.document.documentElement;
+
+      if (isDark) {
+        htmlElement.classList.add('dark-theme');
+      } else {
+        htmlElement.classList.remove('dark-theme');
+      }
+    });
+  }
+
+  /** Toggle between light and dark theme */
+  toggleTheme(): void {
+    const newTheme = this.isDark() ? 'light' : 'dark';
+    this.uiStore.setTheme(newTheme);
+  }
 
   /** Close the drawer when the user picks a link on mobile. */
   onNavigate(): void {

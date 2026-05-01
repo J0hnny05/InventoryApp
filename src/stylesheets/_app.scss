@@ -3,11 +3,38 @@
 @use 'utilities';
 @use 'tokens' as t;
 
+// ── Theme-aware CSS variables ─────────────────────────────────
+// Components reference these via var(--c-…) so colors flip
+// automatically when html.dark-theme is toggled.
+html {
+  --c-ink:           #{t.$invy-ink};
+  --c-ink-soft:      #{t.$invy-ink-soft};
+  --c-muted:         #{t.$invy-muted};
+  --c-faint:         #{t.$invy-faint};
+  --c-surface:       #{t.$invy-surface};
+  --c-paper:         #{t.$invy-paper};
+  --c-bg-subtle:     #{t.$invy-bg-subtle};
+  --c-border:        #{t.$invy-border};
+  --c-border-strong: #{t.$invy-border-strong};
+}
+
+html.dark-theme {
+  --c-ink:           #{t.$invy-dark-ink};
+  --c-ink-soft:      #{t.$invy-dark-ink-soft};
+  --c-muted:         #{t.$invy-dark-muted};
+  --c-faint:         #{t.$invy-dark-faint};
+  --c-surface:       #{t.$invy-dark-surface};
+  --c-paper:         #{t.$invy-dark-bg};
+  --c-bg-subtle:     #{t.$invy-dark-bg-subtle};
+  --c-border:        #{t.$invy-dark-border};
+  --c-border-strong: #{t.$invy-dark-border-strong};
+}
+
 html, body {
   height: 100%;
   margin: 0;
-  background: t.$invy-paper;
-  color: t.$invy-ink;
+  background: var(--c-paper) !important;
+  color: var(--c-ink) !important;
 }
 
 * { box-sizing: border-box; }
@@ -19,18 +46,25 @@ a { color: inherit; text-decoration: none; }
   color: t.$invy-ink;
 }
 
+html.dark-theme ::selection {
+  background: t.$invy-dark-sage-soft;
+  color: t.$invy-dark-ink;
+}
+
 // Scrollbar — washed and quiet
 ::-webkit-scrollbar       { width: 10px; height: 10px; }
 ::-webkit-scrollbar-thumb { background: t.$invy-border-strong; border-radius: t.$invy-radius-pill; }
 ::-webkit-scrollbar-track { background: transparent; }
+
+html.dark-theme ::-webkit-scrollbar-thumb { background: t.$invy-dark-border-strong; }
 
 // ── Form-field cleanup ──────────────────────────────────────────
 // Outlined Material fields ship with a subscript area + a line-ripple
 // that are visible even when subscriptSizing="dynamic", and the
 // notched-outline notch element keeps thin left/right borders that
 // look like vertical seams between the leading edge and the input
-// area. Forcefully hide all of these so the field renders as one
-// continuous rounded box. mat-error still appears inline.
+// area. Forcefully hide these so the field renders as one continuous
+// rounded box.
 .mat-mdc-form-field {
   .mat-mdc-form-field-subscript-wrapper { display: none; }
   .mdc-line-ripple { display: none; }
@@ -50,6 +84,67 @@ a { color: inherit; text-decoration: none; }
   .mat-mdc-form-field-text-suffix {
     border: 0 !important;
   }
+}
+
+// Inside dialogs we DO want the subscript wrapper so mat-error renders.
+// Without this, validation messages were silently hidden by the rule
+// above and the dialogs looked like text was being cropped.
+.mat-mdc-dialog-container .mat-mdc-form-field {
+  .mat-mdc-form-field-subscript-wrapper { display: block; }
+}
+
+// ── Dialog polish ───────────────────────────────────────────────
+// Centralized dialog styles — surface, padding, scroll, dark mode.
+.mat-mdc-dialog-container {
+  --mdc-dialog-container-color: var(--c-surface);
+  --mdc-dialog-subhead-color:   var(--c-ink);
+  --mdc-dialog-supporting-text-color: var(--c-ink-soft);
+
+  .mat-mdc-dialog-surface {
+    background: var(--c-surface) !important;
+    color: var(--c-ink);
+    border: 1px solid var(--c-border);
+    border-radius: t.$invy-radius-lg;
+    box-shadow:
+      0 1px 2px rgba(0, 0, 0, 0.06),
+      0 12px 32px rgba(0, 0, 0, 0.18);
+    overflow: hidden;
+  }
+
+  // Title: tighter, more breathing room below
+  .mat-mdc-dialog-title {
+    padding: t.$invy-space-5 t.$invy-space-6 t.$invy-space-3 !important;
+    color: var(--c-ink);
+    border-bottom: 1px solid var(--c-border);
+    margin: 0 !important;
+
+    // Title's internal ::before pseudo can push baseline awkwardly.
+    &::before { display: none !important; }
+  }
+
+  // Content: roomy padding, scroll if too tall
+  .mat-mdc-dialog-content {
+    padding: t.$invy-space-5 t.$invy-space-6 !important;
+    max-height: 70vh;
+    overflow-y: auto;
+    color: var(--c-ink);
+
+    p { color: var(--c-ink-soft); }
+  }
+
+  // Actions: divider on top, consistent padding
+  .mat-mdc-dialog-actions {
+    padding: t.$invy-space-3 t.$invy-space-5 t.$invy-space-4 !important;
+    border-top: 1px solid var(--c-border);
+    min-height: auto;
+  }
+}
+
+// Constrain the CDK overlay panel so dialogs never exceed the viewport
+// and have a consistent max width on large screens.
+.cdk-overlay-pane.mat-mdc-dialog-panel {
+  max-width: min(92vw, 640px) !important;
+  max-height: 90vh;
 }
 
 // Native date inputs: calmer calendar picker indicator, no internal divider.

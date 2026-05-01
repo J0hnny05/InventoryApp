@@ -6,8 +6,8 @@
   display: flex;
   flex-direction: column;
   gap: t.$invy-space-3;
-  background: t.$invy-surface;
-  border: 1px solid t.$invy-border;
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
   border-radius: t.$invy-radius-lg;
   padding: t.$invy-space-6 t.$invy-space-8;
 }
@@ -17,7 +17,7 @@
   align-items: center;
   gap: 6px;
   font-size: 0.85rem;
-  color: t.$invy-muted;
+  color: var(--c-muted);
   width: fit-content;
 
   &:hover { color: t.$invy-blue-deep; }
@@ -73,8 +73,8 @@
   flex-direction: column;
   gap: 2px;
   padding: t.$invy-space-3;
-  background: t.$invy-bg-subtle;
-  border: 1px solid t.$invy-border;
+  background: var(--c-bg-subtle);
+  border: 1px solid var(--c-border);
   border-radius: t.$invy-radius-md;
 }
 
@@ -82,7 +82,7 @@
   font-size: 1.4rem;
   font-weight: 600;
   letter-spacing: -0.02em;
-  color: t.$invy-ink;
+  color: var(--c-ink);
   display: inline-flex;
   align-items: baseline;
   gap: 4px;
@@ -91,7 +91,7 @@
 .stat__unit {
   font-size: 0.8rem;
   font-weight: 500;
-  color: t.$invy-muted;
+  color: var(--c-muted);
   letter-spacing: 0;
 }
 
@@ -100,7 +100,7 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: t.$invy-muted;
+  color: var(--c-muted);
 }
 
 .sale-strip {
@@ -108,9 +108,9 @@
   grid-template-columns: repeat(3, 1fr);
   gap: t.$invy-space-3;
   padding: t.$invy-space-3 t.$invy-space-4;
-  border: 1px solid t.$invy-border;
+  border: 1px solid var(--c-border);
   border-radius: t.$invy-radius-md;
-  background: t.$invy-bg-subtle;
+  background: var(--c-bg-subtle);
   margin-top: t.$invy-space-2;
 
   &.invy-positive { border-color: t.$invy-success; background: t.$invy-success-bg; }
@@ -135,19 +135,19 @@
     grid-template-columns: 1fr auto;
     gap: t.$invy-space-3;
     padding: 8px 0;
-    border-top: 1px solid t.$invy-border;
+    border-top: 1px solid var(--c-border);
 
     &:first-child { border-top: 0; }
   }
 
-  dt { color: t.$invy-muted; font-size: 0.85rem; }
-  dd { margin: 0; font-weight: 500; color: t.$invy-ink; }
+  dt { color: var(--c-muted); font-size: 0.85rem; }
+  dd { margin: 0; font-weight: 500; color: var(--c-ink); }
 }
 
 .info-tags { display: flex; gap: 4px; flex-wrap: wrap; }
 
 .info-desc {
   font-size: 0.92rem;
-  color: t.$invy-ink-soft;
+  color: var(--c-ink-soft);
   line-height: 1.55;
 }

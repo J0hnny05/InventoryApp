@@ -39,8 +39,8 @@
   justify-content: space-between;
   gap: t.$invy-space-3;
   padding: t.$invy-space-3 t.$invy-space-4;
-  background: t.$invy-bg-subtle;
-  border: 1px dashed t.$invy-border-strong;
+  background: var(--c-bg-subtle);
+  border: 1px dashed var(--c-border-strong);
   border-radius: t.$invy-radius-md;
 }
 
@@ -51,12 +51,12 @@
   gap: t.$invy-space-3;
   padding-top: t.$invy-space-3;
   margin-top: t.$invy-space-3;
-  border-top: 1px solid t.$invy-border;
+  border-top: 1px solid var(--c-border);
 
   strong {
     font-size: 1.05rem;
     font-weight: 700;
-    color: t.$invy-ink;
+    color: var(--c-ink);
   }
 }
 
@@ -86,7 +86,7 @@
   gap: t.$invy-space-3;
   align-items: center;
   padding: 10px 0;
-  border-top: 1px solid t.$invy-border;
+  border-top: 1px solid var(--c-border);
 
   &:first-child { border-top: 0; }
 }

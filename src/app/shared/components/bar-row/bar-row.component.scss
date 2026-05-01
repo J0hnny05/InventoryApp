@@ -11,14 +11,14 @@
   gap: t.$invy-space-3;
 }
 
-.bar-row__label { font-weight: 500; color: t.$invy-ink-soft; }
-.bar-row__value { font-weight: 600; color: t.$invy-ink; }
+.bar-row__label { font-weight: 500; color: var(--c-ink-soft); }
+.bar-row__value { font-weight: 600; color: var(--c-ink); }
 .bar-row__sub   { font-size: 0.72rem; }
 
 .bar-row__track {
   height: 10px;
-  background: t.$invy-bg-subtle;
-  border: 1px solid t.$invy-border;
+  background: var(--c-bg-subtle);
+  border: 1px solid var(--c-border);
   border-radius: t.$invy-radius-pill;
   overflow: hidden;
 }

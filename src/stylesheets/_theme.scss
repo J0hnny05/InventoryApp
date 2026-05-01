@@ -16,6 +16,21 @@ html {
     density: 0,
   ));
 
+  // Dark mode theme
+  &.dark-theme {
+    color-scheme: dark;
+
+    @include mat.theme((
+      color: (
+        theme-type: dark,
+        primary: mat.$blue-palette,
+        tertiary: mat.$violet-palette,
+      ),
+      typography: 'Inter, system-ui, sans-serif',
+      density: 0,
+    ));
+  }
+
   // ── Surface / background (pure white) ────────────────────────
   --mat-sys-background:                 #FFFFFF;
   --mat-sys-surface:                    #FFFFFF;
@@ -60,6 +75,7 @@ html {
   --mdc-outlined-card-container-shape: #{t.$invy-radius-md};
   --mdc-outlined-card-outline-color:   #{t.$invy-border};
   --mdc-outlined-card-outline-width:   1px;
+  --mdc-outlined-card-container-color: #{t.$invy-surface};
 
   // Buttons: pill primary buttons for the unique flair, square FABs more rounded
   --mdc-filled-button-container-shape:    #{t.$invy-radius-pill};
@@ -82,4 +98,48 @@ html {
   --mat-sidenav-container-background-color: #{t.$invy-surface};
   --mat-sidenav-container-divider-color:    #{t.$invy-border};
   --mat-sidenav-container-shape:            0;
+
+  // ── Dark theme overrides ─────────────────────────────────────────
+  &.dark-theme {
+    // Surface / background (dark charcoal)
+    --mat-sys-background:                 #{t.$invy-dark-bg};
+    --mat-sys-surface:                    #{t.$invy-dark-surface};
+    --mat-sys-surface-dim:                #{t.$invy-dark-bg};
+    --mat-sys-surface-bright:             #{t.$invy-dark-surface-high};
+    --mat-sys-surface-container-lowest:   #{t.$invy-dark-bg};
+    --mat-sys-surface-container-low:      #{t.$invy-dark-surface};
+    --mat-sys-surface-container:          #{t.$invy-dark-surface};
+    --mat-sys-surface-container-high:     #{t.$invy-dark-surface-high};
+    --mat-sys-surface-container-highest:  #{t.$invy-dark-bg-subtle};
+
+    // Foreground / text
+    --mat-sys-on-background:        #{t.$invy-dark-ink};
+    --mat-sys-on-surface:           #{t.$invy-dark-ink};
+    --mat-sys-on-surface-variant:   #{t.$invy-dark-muted};
+
+    // Brand: washed blue for dark mode
+    --mat-sys-primary:              #{t.$invy-dark-blue-deep};
+    --mat-sys-on-primary:           #{t.$invy-dark-bg};
+    --mat-sys-primary-container:    #{t.$invy-dark-blue-soft};
+    --mat-sys-on-primary-container: #{t.$invy-dark-blue};
+
+    --mat-sys-tertiary:              #{t.$invy-dark-mauve-deep};
+    --mat-sys-on-tertiary:           #{t.$invy-dark-bg};
+    --mat-sys-tertiary-container:    #{t.$invy-dark-mauve};
+    --mat-sys-on-tertiary-container: #{t.$invy-dark-ink};
+
+    // Outline (borders)
+    --mat-sys-outline:              #{t.$invy-dark-border-strong};
+    --mat-sys-outline-variant:      #{t.$invy-dark-border};
+
+    // Component-specific overrides for dark mode
+    --mdc-outlined-card-outline-color:        #{t.$invy-dark-border};
+    --mdc-outlined-card-container-color:      #{t.$invy-dark-surface};
+    --mdc-outlined-text-field-outline-color:  #{t.$invy-dark-border-strong};
+
+    // Sidenav dark mode
+    --mat-sidenav-container-background-color: #{t.$invy-dark-surface};
+    --mat-sidenav-container-divider-color:    #{t.$invy-dark-border};
+    --mat-sidenav-content-background-color:   #{t.$invy-dark-bg};
+  }
 }

@@ -23,6 +23,10 @@
   margin-top: 2px;
   white-space: pre-line;       // newlines from multi-currency totals render as new lines
   line-height: 1.2;
+
+  :host-context(.dark-theme) & {
+    color: t.$invy-dark-ink;
+  }
 }
 
 .stat-card__hint {

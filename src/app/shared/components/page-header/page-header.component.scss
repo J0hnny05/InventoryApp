@@ -11,6 +11,11 @@
   background: linear-gradient(180deg, t.$invy-blue-soft 0%, t.$invy-surface 100%);
   border: 1px solid t.$invy-border;
   border-radius: t.$invy-radius-lg;
+
+  :host-context(.dark-theme) & {
+    background: linear-gradient(180deg, t.$invy-dark-blue-soft 0%, t.$invy-dark-surface 100%);
+    border-color: t.$invy-dark-border;
+  }
 }
 
 .page-header__text {

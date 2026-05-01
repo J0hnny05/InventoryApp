@@ -39,6 +39,15 @@
     </nav>
 
     <footer class="shell__footer">
+      <button
+        type="button"
+        class="invy-iconbtn theme-toggle"
+        [class.is-active]="isDark()"
+        [attr.aria-label]="isDark() ? 'Switch to light mode' : 'Switch to dark mode'"
+        (click)="toggleTheme()"
+      >
+        <mat-icon>{{ isDark() ? 'light_mode' : 'dark_mode' }}</mat-icon>
+      </button>
     </footer>
   </mat-sidenav>
 

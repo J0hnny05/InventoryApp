@@ -22,6 +22,18 @@
     .item-card__strip { background: t.$invy-blue-deep !important; }
   }
 
+  :host-context(.dark-theme) & {
+    &:hover {
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    }
+
+    &.is-pinned {
+      --mdc-outlined-card-outline-color: #{t.$invy-dark-blue-deep};
+
+      .item-card__strip { background: t.$invy-dark-blue-deep !important; }
+    }
+  }
+
   ::ng-deep .mat-mdc-card-content {
     display: flex;
     flex-direction: column;
@@ -67,6 +79,11 @@
   letter-spacing: 0.02em;
   color: t.$invy-ink-soft;
   border: 1px solid t.$invy-border;
+
+  :host-context(.dark-theme) & {
+    color: t.$invy-dark-ink-soft;
+    border-color: t.$invy-dark-border;
+  }
 }
 
 // ── Title + meta ─────────────────────────────────────────────────
@@ -78,6 +95,8 @@
   flex: 1 1 auto;
 
   &:hover .item-card__title { color: t.$invy-blue-deep; }
+
+  :host-context(.dark-theme) &:hover .item-card__title { color: t.$invy-dark-blue; }
 }
 
 .item-card__title {
@@ -87,6 +106,10 @@
   line-height: 1.25;
   color: t.$invy-ink;
   transition: color 120ms ease;
+
+  :host-context(.dark-theme) & {
+    color: t.$invy-dark-ink;
+  }
 }
 
 .item-card__sub {
@@ -104,6 +127,10 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
   line-height: 1.5;
+
+  :host-context(.dark-theme) & {
+    color: t.$invy-dark-ink-soft;
+  }
 }
 
 .item-card__tags { display: flex; gap: 4px; flex-wrap: wrap; }
@@ -117,6 +144,11 @@
   background: t.$invy-bg-subtle;
   border: 1px solid t.$invy-border;
   border-radius: t.$invy-radius-sm;
+
+  :host-context(.dark-theme) & {
+    background: t.$invy-dark-bg-subtle;
+    border-color: t.$invy-dark-border;
+  }
 }
 
 .item-card__price-main {
@@ -125,6 +157,10 @@
   letter-spacing: -0.02em;
   color: t.$invy-ink;
   line-height: 1.1;
+
+  :host-context(.dark-theme) & {
+    color: t.$invy-dark-ink;
+  }
 }
 
 .item-card__price-meta {
@@ -145,6 +181,11 @@
   font-size: 0.72rem;
   font-weight: 600;
   letter-spacing: 0.02em;
+
+  :host-context(.dark-theme) & {
+    background: t.$invy-dark-blue-soft;
+    color: t.$invy-dark-blue;
+  }
 }
 
 // ── Footer actions ───────────────────────────────────────────────
