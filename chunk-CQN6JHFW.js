@@ -1,0 +1,1 @@
+import{lb as n}from"./chunk-7MC67TSL.js";var r=class e{transform(i){return i==null||i===0?"invy-muted":i>0?"invy-positive":"invy-negative"}static \u0275fac=function(t){return new(t||e)};static \u0275pipe=n({name:"invyProfitClass",type:e,pure:!0})};export{r as a};
