@@ -7,7 +7,8 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "watch": "ng build --watch --configuration development"
+    "watch": "ng build --watch --configuration development",
+    "deploy": "ng build --base-href ./ && npx angular-cli-ghpages --dir=dist/untitled1/browser --no-silent"
   },
   "dependencies": {
     "@angular/animations": "^20.3.0",

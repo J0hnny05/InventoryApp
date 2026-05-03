@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <title>Inventory — personal item tracker</title>
-  <base href="/">
+  <base href="./">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Track everything you own — clothes, books, electronics, vehicles. See what you use, what you forget, and the profit when you sell.">
   <meta name="theme-color" content="#5C7AA3">
@@ -12,6 +12,18 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined" rel="stylesheet">
+  <script>
+    // Decode the path that 404.html encoded into the query string, so the
+    // Angular router sees the original URL on a deep-link / refresh.
+    (function (l) {
+      if (l.search[1] === '/') {
+        var decoded = l.search.slice(1).split('&').map(function (s) {
+          return s.replace(/~and~/g, '&');
+        }).join('?');
+        window.history.replaceState(null, null, l.pathname.slice(0, -1) + decoded + l.hash);
+      }
+    })(window.location);
+  </script>
 </head>
 <body class="mat-typography">
   <invy-app></invy-app>
