@@ -1,73 +1,97 @@
-<mat-sidenav-container class="shell" autosize>
-  <mat-sidenav
-    #sidenav
-    class="shell__nav"
-    [mode]="isMobile() ? 'over' : 'side'"
-    [opened]="!isMobile()"
-    [disableClose]="!isMobile()"
-  >
-    <div class="brand">
-      <span class="brand__mark" aria-hidden="true">⌬</span>
-      <div class="brand__text">
-        <span class="brand__name">Inventory</span>
+@if (!showShellChrome()) {
+  <router-outlet />
+} @else {
+  <mat-sidenav-container class="shell" autosize>
+    <mat-sidenav
+      #sidenav
+      class="shell__nav"
+      [mode]="isMobile() ? 'over' : 'side'"
+      [opened]="!isMobile()"
+      [disableClose]="!isMobile()"
+    >
+      <div class="brand">
+        <span class="brand__mark" aria-hidden="true">⌬</span>
+        <div class="brand__text">
+          <span class="brand__name">Inventory</span>
+        </div>
+        @if (isMobile()) {
+          <button
+            type="button"
+            class="invy-iconbtn brand__close"
+            aria-label="Close menu"
+            (click)="sidenav.close()"
+          >
+            <mat-icon>close</mat-icon>
+          </button>
+        }
       </div>
-      @if (isMobile()) {
-        <button
-          type="button"
-          class="invy-iconbtn brand__close"
-          aria-label="Close menu"
-          (click)="sidenav.close()"
-        >
-          <mat-icon>close</mat-icon>
-        </button>
-      }
-    </div>
 
-    <nav class="nav" aria-label="Primary">
-      @for (link of links; track link.path) {
-        <a
-          class="nav__link"
-          [routerLink]="link.path"
-          routerLinkActive="is-active"
-          [routerLinkActiveOptions]="{ exact: false }"
-          (click)="onNavigate()"
-        >
-          <mat-icon class="nav__icon">{{ link.icon }}</mat-icon>
-          <span class="nav__label">{{ link.label }}</span>
+      @if (user()) {
+        <a class="user-chip" routerLink="/me" routerLinkActive="is-active" (click)="onNavigate()">
+          <span class="user-chip__avatar">{{ initial() }}</span>
+          <span class="user-chip__text">
+            <span class="user-chip__name">{{ user()?.username }}</span>
+            <span class="user-chip__role" [attr.data-role]="user()?.role">{{ roleLabel() }}</span>
+          </span>
         </a>
       }
-    </nav>
 
-    <footer class="shell__footer">
-      <button
-        type="button"
-        class="invy-iconbtn theme-toggle"
-        [class.is-active]="isDark()"
-        [attr.aria-label]="isDark() ? 'Switch to light mode' : 'Switch to dark mode'"
-        (click)="toggleTheme()"
-      >
-        <mat-icon>{{ isDark() ? 'light_mode' : 'dark_mode' }}</mat-icon>
-      </button>
-    </footer>
-  </mat-sidenav>
+      <nav class="nav" aria-label="Primary">
+        @for (link of links(); track link.path) {
+          <a
+            class="nav__link"
+            [routerLink]="link.path"
+            routerLinkActive="is-active"
+            [routerLinkActiveOptions]="{ exact: link.path === '/me' }"
+            (click)="onNavigate()"
+          >
+            <mat-icon class="nav__icon">{{ link.icon }}</mat-icon>
+            <span class="nav__label">{{ link.label }}</span>
+          </a>
+        }
+      </nav>
 
-  <mat-sidenav-content class="shell__content">
-    @if (isMobile()) {
-      <header class="topbar">
+      <footer class="shell__footer">
         <button
           type="button"
-          class="invy-iconbtn"
-          aria-label="Open menu"
-          (click)="sidenav.toggle()"
+          class="invy-iconbtn theme-toggle"
+          [class.is-active]="isDark()"
+          [attr.aria-label]="isDark() ? 'Switch to light mode' : 'Switch to dark mode'"
+          (click)="toggleTheme()"
         >
-          <mat-icon>menu</mat-icon>
+          <mat-icon>{{ isDark() ? 'light_mode' : 'dark_mode' }}</mat-icon>
         </button>
-        <span class="topbar__brand">
-          <span class="topbar__mark" aria-hidden="true">⌬</span>
-          <span>Inventory</span>
-        </span>
-      </header>
-    }
-    <router-outlet />
-  </mat-sidenav-content>
-</mat-sidenav-container>
+
+        <button
+          type="button"
+          class="invy-iconbtn shell__logout"
+          aria-label="Logout"
+          matTooltip="Sign out"
+          (click)="logout()"
+        >
+          <mat-icon>logout</mat-icon>
+        </button>
+      </footer>
+    </mat-sidenav>
+
+    <mat-sidenav-content class="shell__content">
+      @if (isMobile()) {
+        <header class="topbar">
+          <button
+            type="button"
+            class="invy-iconbtn"
+            aria-label="Open menu"
+            (click)="sidenav.toggle()"
+          >
+            <mat-icon>menu</mat-icon>
+          </button>
+          <span class="topbar__brand">
+            <span class="topbar__mark" aria-hidden="true">⌬</span>
+            <span>Inventory</span>
+          </span>
+        </header>
+      }
+      <router-outlet />
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+}

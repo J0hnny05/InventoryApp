@@ -119,6 +119,66 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 8px;
+}
+
+.shell__logout {
+  /* matches .invy-iconbtn baseline; just keep alignment */
+}
+
+.user-chip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: t.$invy-radius-sm;
+  text-decoration: none;
+  color: inherit;
+  background: t.$invy-bg-subtle;
+
+  &.is-active { outline: 2px solid t.$invy-blue-deep; }
+
+  :host-context(.dark-theme) & {
+    background: t.$invy-dark-bg-subtle;
+  }
+}
+
+.user-chip__avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6a82c8, #9b6dbb);
+  color: #fff;
+  font-weight: 600;
+  font-size: 14px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.user-chip__text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+  min-width: 0;
+}
+
+.user-chip__name {
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-chip__role {
+  font-size: 10px;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  opacity: 0.7;
+  &[data-role="admin"]  { color: #b13c3c; }
+  &[data-role="owner"]  { color: #527537; }
+  &[data-role="helper"] { color: #5a5fa3; }
 }
 
 .theme-toggle {

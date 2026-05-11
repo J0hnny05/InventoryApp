@@ -1,0 +1,47 @@
+<section class="auth">
+  <div class="auth__card">
+    <header class="auth__head">
+      <span class="auth__mark" aria-hidden="true">⌬</span>
+      <h1 class="auth__title">Welcome back</h1>
+      <p class="auth__subtitle">Sign in to your inventory.</p>
+    </header>
+
+    <form class="auth__form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <mat-form-field appearance="outline">
+        <mat-label>Username</mat-label>
+        <input matInput formControlName="username" autocomplete="username" autofocus />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Password</mat-label>
+        <input matInput type="password" formControlName="password" autocomplete="current-password" />
+      </mat-form-field>
+
+      @if (error()) {
+        <div class="auth__error" role="alert">
+          <mat-icon aria-hidden="true">error_outline</mat-icon>
+          <span>{{ error() }}</span>
+        </div>
+      }
+
+      <button
+        mat-flat-button
+        color="primary"
+        type="submit"
+        class="auth__submit"
+        [disabled]="busy() || form.invalid"
+      >
+        @if (busy()) {
+          <mat-spinner diameter="20" />
+        } @else {
+          <span>Sign in</span>
+        }
+      </button>
+    </form>
+
+    <footer class="auth__foot">
+      <span>New here?</span>
+      <a routerLink="/register">Create an owner account</a>
+    </footer>
+  </div>
+</section>
