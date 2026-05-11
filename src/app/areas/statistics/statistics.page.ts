@@ -10,7 +10,6 @@ import { CategoriesStore } from '../../store/categories.store';
 import { ExchangeRatesStore } from '../../store/exchange-rates.store';
 import { UiStore } from '../../store/ui.store';
 import { InventoryItem, daysOwned } from '../../modules/inventory/models/inventory-item.model';
-import { Category } from '../../modules/categories/models/category.model';
 
 import { MoneyPipe } from '../../modules/inventory/pipes/money.pipe';
 import { DaysOwnedPipe } from '../../modules/inventory/pipes/days-owned.pipe';
@@ -39,6 +38,31 @@ interface UsageRow {
 }
 
 const TOP_LIMIT = 5;
+
+/**
+ * Idle-item rule (see `idle` below).
+ *
+ * An owned, non-pinned item is "idle" when *all three* hold:
+ *  1. It's been owned long enough to fairly evaluate it (>= GRACE_DAYS).
+ *  2. You haven't touched it recently — either it was never used, or the last
+ *     use was >= STALE_DAYS ago.
+ *  3. Its lifetime use rate is below MIN_USE_RATE (uses / month-owned).
+ *
+ * The "idle score" combines staleness with rarity so older-and-rarer items
+ * float to the top. Pinned items are excluded — pinning is a deliberate
+ * "I care about this" signal.
+ */
+const GRACE_DAYS = 30;          // brand-new items get a free pass
+const STALE_DAYS = 60;          // "haven't touched it in two months"
+const MIN_USE_RATE = 0.5;       // < 0.5 uses / 30-day month = under-used
+
+interface IdleRow {
+  readonly item: InventoryItem;
+  readonly daysSinceTouch: number;
+  readonly usesPerMonth: number;
+  readonly reason: string;
+  readonly score: number;
+}
 
 const EUR_FORMAT = new Intl.NumberFormat(undefined, {
   style: 'currency',
@@ -246,12 +270,33 @@ export class StatisticsPage {
       .slice(0, TOP_LIMIT),
   );
 
-  readonly idle = computed<readonly InventoryItem[]>(() =>
-    [...this.inventoryStore.owned()]
-      .filter((i) => i.useCount === 0)
-      .sort((a, b) => daysOwned(b) - daysOwned(a))
-      .slice(0, TOP_LIMIT),
-  );
+  readonly idle = computed<readonly IdleRow[]>(() => {
+    const rows: IdleRow[] = [];
+    for (const it of this.inventoryStore.owned()) {
+      // Pinned items aren't candidates: the user explicitly cares about them.
+      if (it.pinned) continue;
+
+      const owned = daysOwned(it);
+      if (owned < GRACE_DAYS) continue; // grace period — too new to judge
+
+      const daysSinceTouch = daysSinceLastTouch(it);
+      const usesPerMonth = owned > 0 ? (it.useCount / owned) * 30 : 0;
+
+      const staleEnough = daysSinceTouch >= STALE_DAYS;
+      const underUsed = usesPerMonth < MIN_USE_RATE;
+      if (!staleEnough || !underUsed) continue;
+
+      rows.push({
+        item: it,
+        daysSinceTouch,
+        usesPerMonth,
+        reason: idleReason(it, daysSinceTouch, usesPerMonth),
+        // Higher = more idle. Staleness dominates; rarity breaks ties.
+        score: daysSinceTouch / (1 + usesPerMonth),
+      });
+    }
+    return rows.sort((a, b) => b.score - a.score).slice(0, TOP_LIMIT);
+  });
 
   resolveCategory(id: string): string {
     return this.categoriesStore.resolveName(id);
@@ -271,6 +316,23 @@ export class StatisticsPage {
       })
       .join('\n');
   }
+}
 
-  protected readonly _typeGuard?: Category;
+/** Days since the item was last touched. "Touched" = recorded use; falls back
+ *  to the purchase date when the item has never been used. */
+function daysSinceLastTouch(it: InventoryItem): number {
+  const anchorIso = it.lastUsedAt ?? `${it.purchaseDate}T00:00:00Z`;
+  const ms = Date.now() - new Date(anchorIso).getTime();
+  return Math.max(0, Math.floor(ms / 86_400_000));
+}
+
+/** Human-readable explanation of why the item is on the idle list. */
+function idleReason(it: InventoryItem, daysSinceTouch: number, usesPerMonth: number): string {
+  if (it.useCount === 0) {
+    return `Never used in ${daysSinceTouch}d`;
+  }
+  // Surface uses-per-year for items that have been used at least once — it's
+  // a more relatable cadence than "0.18 uses/month".
+  const perYear = Math.round(usesPerMonth * 12);
+  return `${perYear}×/yr · last use ${daysSinceTouch}d ago`;
 }

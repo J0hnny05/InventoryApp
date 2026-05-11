@@ -148,19 +148,25 @@
       <mat-card-content class="stats-card__inner">
         <header class="stats-card__head">
           <h3 class="text-base font-semibold tracking-tight">Idle items</h3>
-          <span class="invy-eyebrow">never used</span>
+          <span class="invy-eyebrow" title="Owned ≥ 30 days, untouched ≥ 60 days, used &lt; 0.5×/month">underused</span>
         </header>
         @if (idle().length === 0) {
-          <p class="invy-muted text-sm py-2">Every owned item has been used at least once. Nice.</p>
+          <p class="invy-muted text-sm py-2">
+            Nothing's been collecting dust — every item past its first month is getting used.
+          </p>
         } @else {
           <ul class="dash-list">
-            @for (it of idle(); track it.id) {
+            @for (row of idle(); track row.item.id) {
               <li class="dash-list__row">
-                <a [routerLink]="['/inventory', it.id]" class="dash-list__main">
-                  <strong>{{ it.name }}</strong>
-                  <span class="invy-muted text-xs">{{ resolveCategory(it.categoryId) }} · {{ it | invyDaysOwned }} owned</span>
+                <a [routerLink]="['/inventory', row.item.id]" class="dash-list__main">
+                  <strong>{{ row.item.name }}</strong>
+                  <span class="invy-muted text-xs">
+                    {{ resolveCategory(row.item.categoryId) }} · {{ row.item | invyDaysOwned }} owned · {{ row.reason }}
+                  </span>
                 </a>
-                <span class="invy-numeric invy-muted">0 uses</span>
+                <span class="invy-numeric invy-muted">
+                  {{ row.item.useCount }} use{{ row.item.useCount === 1 ? '' : 's' }}
+                </span>
               </li>
             }
           </ul>

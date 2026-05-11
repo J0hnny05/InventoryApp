@@ -4,11 +4,13 @@ import { Router, RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialog } from '@angular/material/dialog';
 import { firstValueFrom } from 'rxjs';
 
 import { InventoryStore } from '../../store/inventory.store';
 import { CategoriesStore } from '../../store/categories.store';
+import { PermissionsService } from '../../auth/services/permissions.service';
 import {
   InventoryItem,
   daysOwned,
@@ -40,6 +42,7 @@ import {
     MatButtonModule,
     MatCardModule,
     MatIconModule,
+    MatTooltipModule,
     EmptyStateComponent,
     MoneyPipe,
     ProfitClassPipe,
@@ -53,6 +56,7 @@ export class ItemDetailPage {
 
   private readonly inventoryStore = inject(InventoryStore);
   private readonly categoriesStore = inject(CategoriesStore);
+  readonly perms = inject(PermissionsService);
   private readonly dialog = inject(MatDialog);
   private readonly router = inject(Router);
 
@@ -101,14 +105,17 @@ export class ItemDetailPage {
   }
 
   recordUse(id: string): void {
+    if (!this.perms.canRecordUse()) return;
     this.inventoryStore.recordUse(id);
   }
 
   togglePin(id: string): void {
+    if (!this.perms.canPin()) return;
     this.inventoryStore.togglePin(id);
   }
 
   async openEdit(it: InventoryItem): Promise<void> {
+    if (!this.perms.canEdit()) return;
     const ref = this.dialog.open<
       ItemFormDialogComponent,
       ItemFormDialogData,
@@ -119,6 +126,7 @@ export class ItemDetailPage {
   }
 
   async openSell(it: InventoryItem): Promise<void> {
+    if (!this.perms.canSell()) return;
     const ref = this.dialog.open<SellDialogComponent, SellDialogData, SellDialogResult | undefined>(
       SellDialogComponent,
       { data: { item: it }, autoFocus: 'first-tabbable' },
@@ -128,6 +136,7 @@ export class ItemDetailPage {
   }
 
   async confirmDelete(it: InventoryItem): Promise<void> {
+    if (!this.perms.canDelete()) return;
     const ok = await openConfirm(this.dialog, {
       title: 'Delete this item?',
       message: `"${it.name}" will be permanently removed. This can't be undone.`,

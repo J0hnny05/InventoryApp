@@ -21,41 +21,63 @@
       </div>
       <div class="detail-actions">
         @if (it.status === 'owned') {
-          <button matButton="filled" (click)="recordUse(it.id)">
-            <mat-icon>touch_app</mat-icon>
-            <span>Use</span>
-          </button>
-          <button matButton (click)="openSell(it)">
-            <mat-icon>sell</mat-icon>
-            <span>Sell</span>
-          </button>
+          @if (perms.canRecordUse()) {
+            <button
+              matButton="filled"
+              (click)="recordUse(it.id)"
+              [matTooltip]="
+                it.useCount === 0
+                  ? 'Tap to log that you used this item — adds +1 to the use counter'
+                  : 'Used ' + it.useCount + (it.useCount === 1 ? ' time' : ' times') + ' so far. Tap to add another.'
+              "
+              matTooltipPosition="below"
+            >
+              <mat-icon>touch_app</mat-icon>
+              <span>Use{{ it.useCount > 0 ? ' (' + it.useCount + ')' : '' }}</span>
+            </button>
+          }
+          @if (perms.canSell()) {
+            <button matButton (click)="openSell(it)">
+              <mat-icon>sell</mat-icon>
+              <span>Sell</span>
+            </button>
+          }
         } @else {
           <span class="invy-chip invy-chip--success">
             <mat-icon class="!text-base !w-4 !h-4 !leading-4">check</mat-icon>
             Sold {{ it.soldAt }}
           </span>
         }
-        <button matButton (click)="openEdit(it)">
-          <mat-icon>edit</mat-icon>
-          <span>Edit</span>
-        </button>
-        <button
-          type="button"
-          class="invy-iconbtn"
-          [class.is-active]="it.pinned"
-          [title]="it.pinned ? 'Unpin' : 'Pin'"
-          (click)="togglePin(it.id)"
-        >
-          <mat-icon>push_pin</mat-icon>
-        </button>
-        <button
-          type="button"
-          class="invy-iconbtn"
-          title="Delete"
-          (click)="confirmDelete(it)"
-        >
-          <mat-icon>delete_outline</mat-icon>
-        </button>
+        @if (perms.canEdit()) {
+          <button matButton (click)="openEdit(it)">
+            <mat-icon>edit</mat-icon>
+            <span>Edit</span>
+          </button>
+        }
+        @if (perms.canPin()) {
+          <button
+            type="button"
+            class="invy-iconbtn"
+            [class.is-active]="it.pinned"
+            [title]="it.pinned ? 'Unpin' : 'Pin'"
+            (click)="togglePin(it.id)"
+          >
+            <mat-icon>push_pin</mat-icon>
+          </button>
+        }
+        @if (perms.canDelete()) {
+          <button
+            type="button"
+            class="invy-iconbtn"
+            title="Delete"
+            (click)="confirmDelete(it)"
+          >
+            <mat-icon>delete_outline</mat-icon>
+          </button>
+        }
+        @if (perms.isHelper() && !perms.canEdit() && !perms.canDelete() && !perms.canSell() && !perms.canRecordUse()) {
+          <span class="invy-chip invy-muted">Read-only access</span>
+        }
       </div>
     </header>
 

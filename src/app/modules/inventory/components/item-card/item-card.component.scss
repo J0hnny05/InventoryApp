@@ -196,3 +196,11 @@
   margin-top: auto;
   padding-top: t.$invy-space-2;
 }
+
+.item-card__readonly {
+  flex: 1;
+  font-size: 0.78rem;
+  text-align: center;
+  font-style: italic;
+  opacity: 0.55;
+}

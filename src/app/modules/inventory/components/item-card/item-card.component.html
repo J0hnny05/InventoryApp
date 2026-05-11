@@ -22,16 +22,18 @@
         <span>{{ category()?.name ?? 'Uncategorized' }}</span>
       </span>
 
-      <button
-        type="button"
-        class="invy-iconbtn"
-        [class.is-active]="item().pinned"
-        [attr.aria-label]="item().pinned ? 'Unpin' : 'Pin'"
-        [title]="item().pinned ? 'Unpin' : 'Pin'"
-        (click)="pin.emit(item().id)"
-      >
-        <mat-icon>push_pin</mat-icon>
-      </button>
+      @if (canPin()) {
+        <button
+          type="button"
+          class="invy-iconbtn"
+          [class.is-active]="item().pinned"
+          [attr.aria-label]="item().pinned ? 'Unpin' : 'Pin'"
+          [title]="item().pinned ? 'Unpin' : 'Pin'"
+          (click)="pin.emit(item().id)"
+        >
+          <mat-icon>push_pin</mat-icon>
+        </button>
+      }
     </header>
 
     <a class="item-card__body" [routerLink]="['/inventory', item().id]">
@@ -71,44 +73,61 @@
     </div>
 
     <footer class="item-card__foot">
-      <button
-        type="button"
-        class="invy-iconbtn"
-        title="Use"
-        aria-label="Record use"
-        (click)="use.emit(item().id)"
-      >
-        <mat-icon>touch_app</mat-icon>
-      </button>
-
-      <button
-        matButton="filled"
-        class="!min-w-0 !flex-1"
-        (click)="sell.emit(item().id)"
-      >
-        <mat-icon>sell</mat-icon>
-        <span>Sell</span>
-      </button>
-
-      <button
-        type="button"
-        class="invy-iconbtn"
-        [matMenuTriggerFor]="more"
-        title="More"
-        aria-label="More actions"
-      >
-        <mat-icon>more_horiz</mat-icon>
-      </button>
-      <mat-menu #more="matMenu">
-        <button mat-menu-item (click)="edit.emit(item().id)">
-          <mat-icon>edit</mat-icon>
-          <span>Edit</span>
+      @if (canUse()) {
+        <button
+          type="button"
+          class="invy-iconbtn"
+          aria-label="Record use"
+          [matTooltip]="
+            item().useCount === 0
+              ? 'Mark that you used this item today'
+              : 'Used ' + item().useCount + (item().useCount === 1 ? ' time' : ' times') + ' — tap to log another use'
+          "
+          matTooltipPosition="above"
+          (click)="use.emit(item().id)"
+        >
+          <mat-icon>touch_app</mat-icon>
         </button>
-        <button mat-menu-item (click)="remove.emit(item().id)">
-          <mat-icon>delete_outline</mat-icon>
-          <span>Delete</span>
+      }
+
+      @if (canSell()) {
+        <button
+          matButton="filled"
+          class="!min-w-0 !flex-1"
+          (click)="sell.emit(item().id)"
+        >
+          <mat-icon>sell</mat-icon>
+          <span>Sell</span>
         </button>
-      </mat-menu>
+      } @else {
+        <span class="item-card__readonly invy-muted">Read-only</span>
+      }
+
+      @if (showMenu()) {
+        <button
+          type="button"
+          class="invy-iconbtn"
+          [matMenuTriggerFor]="more"
+          title="More"
+          aria-label="More actions"
+        >
+          <mat-icon>more_horiz</mat-icon>
+        </button>
+        <mat-menu #more="matMenu">
+          @if (canEdit()) {
+            <button mat-menu-item (click)="edit.emit(item().id)">
+              <mat-icon>edit</mat-icon>
+              <span>Edit</span>
+            </button>
+          }
+          @if (canDelete()) {
+            <button mat-menu-item (click)="remove.emit(item().id)">
+              <mat-icon>delete_outline</mat-icon>
+              <span>Delete</span>
+            </button>
+          }
+        </mat-menu>
+      }
     </footer>
   </mat-card-content>
 </mat-card>
