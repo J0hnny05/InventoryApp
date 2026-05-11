@@ -1,70 +1,31 @@
 import { Injectable } from '@angular/core';
 
-interface Envelope<T> {
-  readonly v: number;
-  readonly data: T;
-}
-
+/**
+ * One-shot cleanup of legacy `invy:*` localStorage keys from the pre-backend era.
+ * Auth state lives under `invy:auth` and must survive — everything else is now
+ * server-owned and can be safely purged.
+ */
 @Injectable({ providedIn: 'root' })
-export class LocalStoragePersistenceService {
+export class LegacyStorageCleanup {
   private readonly prefix = 'invy:';
-  private readonly version = 1;
+  private readonly keepKeys = new Set([`${this.prefix}auth`, `${this.prefix}legacy-cleared`]);
 
-  read<T>(key: string): T | null {
-    if (typeof localStorage === 'undefined') return null;
-    try {
-      const raw = localStorage.getItem(this.prefix + key);
-      if (!raw) return null;
-      const env = JSON.parse(raw) as Envelope<T>;
-      if (env?.v !== this.version) return null;
-      return env.data;
-    } catch (err) {
-      console.warn(`[invy] failed to read "${key}":`, err);
-      return null;
-    }
-  }
-
-  write<T>(key: string, value: T): void {
+  /** Run once per browser. Idempotent. */
+  runOnce(): void {
     if (typeof localStorage === 'undefined') return;
-    try {
-      const env: Envelope<T> = { v: this.version, data: value };
-      localStorage.setItem(this.prefix + key, JSON.stringify(env));
-    } catch (err) {
-      console.warn(`[invy] failed to write "${key}":`, err);
-    }
-  }
-
-  remove(key: string): void {
-    if (typeof localStorage === 'undefined') return;
-    localStorage.removeItem(this.prefix + key);
-  }
-
-  /** Dump every key under our prefix — used for the backup/export flow. */
-  exportAll(): Record<string, unknown> {
-    if (typeof localStorage === 'undefined') return {};
-    const out: Record<string, unknown> = {};
+    if (localStorage.getItem(`${this.prefix}legacy-cleared`) === '1') return;
+    const victims: string[] = [];
     for (let i = 0; i < localStorage.length; i++) {
-      const fullKey = localStorage.key(i);
-      if (!fullKey || !fullKey.startsWith(this.prefix)) continue;
-      try {
-        const raw = localStorage.getItem(fullKey);
-        out[fullKey.slice(this.prefix.length)] = raw ? JSON.parse(raw) : null;
-      } catch {
-        // skip corrupt entries — exporting partial is better than failing entirely
-      }
+      const key = localStorage.key(i);
+      if (!key || !key.startsWith(this.prefix)) continue;
+      if (this.keepKeys.has(key)) continue;
+      victims.push(key);
     }
-    return out;
-  }
-
-  /** Restore from an exportAll() blob. Existing keys are overwritten. */
-  importAll(blob: Record<string, unknown>): void {
-    if (typeof localStorage === 'undefined') return;
-    for (const [key, value] of Object.entries(blob)) {
-      try {
-        localStorage.setItem(this.prefix + key, JSON.stringify(value));
-      } catch (err) {
-        console.warn(`[invy] failed to import "${key}":`, err);
-      }
+    for (const k of victims) localStorage.removeItem(k);
+    try {
+      localStorage.setItem(`${this.prefix}legacy-cleared`, '1');
+    } catch {
+      /* swallow */
     }
   }
 }

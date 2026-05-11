@@ -1,22 +1,31 @@
-import { Injectable, Signal, computed, effect, inject, signal } from '@angular/core';
-import { LocalStoragePersistenceService } from './persistence/local-storage.service';
+import { Injectable, Signal, computed, inject, signal } from '@angular/core';
+import { firstValueFrom } from 'rxjs';
+
+import { InventoryApi } from '../api/inventory.api';
 import {
   InventoryItem,
   NewInventoryItemInput,
   profitOf,
 } from '../modules/inventory/models/inventory-item.model';
 
-const STORAGE_KEY = 'inventory.items';
-
+/**
+ * In-memory cache of the authenticated user's inventory. Hydrated from `/api/items`
+ * on first injection (or after login) and reconciled with every server response.
+ * Computed views (totals, pinned, sold) keep their old shape so existing pages
+ * don't need to be reworked.
+ */
 @Injectable({ providedIn: 'root' })
 export class InventoryStore {
-  private readonly persistence = inject(LocalStoragePersistenceService);
+  private readonly api = inject(InventoryApi);
 
-  private readonly _items = signal<InventoryItem[]>(
-    this.persistence.read<InventoryItem[]>(STORAGE_KEY) ?? [],
-  );
+  private readonly _items = signal<InventoryItem[]>([]);
+  private readonly _loading = signal(false);
+  private readonly _total = signal(0);
+  private hydrated = false;
 
   readonly items = this._items.asReadonly();
+  readonly loading = this._loading.asReadonly();
+  readonly total = this._total.asReadonly();
 
   readonly owned  = computed(() => this._items().filter((i) => i.status === 'owned'));
   readonly sold   = computed(() => this._items().filter((i) => i.status === 'sold'));
@@ -39,7 +48,6 @@ export class InventoryStore {
     this.owned().reduce((sum, i) => sum + i.purchasePrice, 0),
   );
 
-  /** Map of currency code -> sum of purchase prices for owned items. */
   readonly ownedValueByCurrency = computed<ReadonlyMap<string, number>>(() => {
     const map = new Map<string, number>();
     for (const it of this.owned()) {
@@ -48,7 +56,6 @@ export class InventoryStore {
     return map;
   });
 
-  /** Map of currency code -> realized P&L for sold items. */
   readonly realizedProfitByCurrency = computed<ReadonlyMap<string, number>>(() => {
     const map = new Map<string, number>();
     for (const it of this.sold()) {
@@ -57,7 +64,6 @@ export class InventoryStore {
     return map;
   });
 
-  /** Map of currency code -> total sale revenue for sold items. */
   readonly soldRevenueByCurrency = computed<ReadonlyMap<string, number>>(() => {
     const map = new Map<string, number>();
     for (const it of this.sold()) {
@@ -66,7 +72,6 @@ export class InventoryStore {
     return map;
   });
 
-  /** Map of currency code -> total cost basis for sold items. */
   readonly soldCostByCurrency = computed<ReadonlyMap<string, number>>(() => {
     const map = new Map<string, number>();
     for (const it of this.sold()) {
@@ -75,12 +80,10 @@ export class InventoryStore {
     return map;
   });
 
-  /** @deprecated currencies are now mixed; prefer realizedProfitByCurrency. */
   readonly totalRealizedProfit = computed(() =>
     this.sold().reduce((sum, i) => sum + profitOf(i), 0),
   );
 
-  /** @deprecated currencies are now mixed; prefer soldRevenueByCurrency. */
   readonly totalSoldRevenue = computed(() =>
     this.sold().reduce((sum, i) => sum + (i.salePrice ?? 0), 0),
   );
@@ -89,69 +92,84 @@ export class InventoryStore {
     return computed(() => this._items().find((i) => i.id === id));
   }
 
-  add(input: NewInventoryItemInput): InventoryItem {
-    const now = new Date().toISOString();
-    const item: InventoryItem = {
-      id: crypto.randomUUID(),
-      pinned: false,
-      status: 'owned',
-      useCount: 0,
-      viewCount: 0,
-      createdAt: now,
-      updatedAt: now,
-      ...input,
-    };
-    this._items.update((list) => [item, ...list]);
-    return item;
+  // ── hydration ───────────────────────────────────────────────────────────
+
+  /** Fetch the full list once. Safe to call repeatedly — only the first call hits the server. */
+  async ensureLoaded(): Promise<void> {
+    if (this.hydrated || this._loading()) return;
+    await this.reload();
   }
 
-  update(id: string, patch: Partial<Omit<InventoryItem, 'id' | 'createdAt'>>): void {
-    const now = new Date().toISOString();
-    this._items.update((list) =>
-      list.map((i) => (i.id === id ? { ...i, ...patch, updatedAt: now } : i)),
-    );
+  /** Force a fresh fetch from the server. */
+  async reload(): Promise<void> {
+    this._loading.set(true);
+    try {
+      // Pull a large page — the personal inventory is bounded and the page itself
+      // can request narrower slices through `InventoryApi.list` directly.
+      const page = await firstValueFrom(this.api.list({ skip: 0, take: 200 }));
+      this._items.set([...page.items]);
+      this._total.set(page.total);
+      this.hydrated = true;
+    } finally {
+      this._loading.set(false);
+    }
   }
 
-  remove(id: string): void {
+  /** Clear cached state on logout. */
+  reset(): void {
+    this._items.set([]);
+    this._total.set(0);
+    this.hydrated = false;
+  }
+
+  // ── mutators ────────────────────────────────────────────────────────────
+
+  async add(input: NewInventoryItemInput): Promise<InventoryItem> {
+    const created = await firstValueFrom(this.api.create(input));
+    this._items.update((list) => [created, ...list]);
+    this._total.update((t) => t + 1);
+    return created;
+  }
+
+  async update(id: string, patch: Partial<InventoryItem>): Promise<InventoryItem | undefined> {
+    const current = this._items().find((i) => i.id === id);
+    if (!current) return undefined;
+    const updated = await firstValueFrom(this.api.update(id, { ...current, ...patch }));
+    this.replaceLocal(updated);
+    return updated;
+  }
+
+  async remove(id: string): Promise<void> {
+    await firstValueFrom(this.api.remove(id));
     this._items.update((list) => list.filter((i) => i.id !== id));
+    this._total.update((t) => Math.max(0, t - 1));
   }
 
-  togglePin(id: string): void {
-    const now = new Date().toISOString();
-    this._items.update((list) =>
-      list.map((i) => (i.id === id ? { ...i, pinned: !i.pinned, updatedAt: now } : i)),
-    );
+  async togglePin(id: string): Promise<void> {
+    const updated = await firstValueFrom(this.api.togglePin(id));
+    this.replaceLocal(updated);
   }
 
-  sell(id: string, salePrice: number, soldAt: string = new Date().toISOString().slice(0, 10)): void {
-    this.update(id, { status: 'sold', salePrice, soldAt });
+  async sell(id: string, salePrice: number, soldAt: string = isoDate()): Promise<void> {
+    const updated = await firstValueFrom(this.api.sell(id, salePrice, soldAt));
+    this.replaceLocal(updated);
   }
 
-  recordUse(id: string): void {
-    const now = new Date().toISOString();
-    this._items.update((list) =>
-      list.map((i) =>
-        i.id === id
-          ? { ...i, useCount: i.useCount + 1, lastUsedAt: now, updatedAt: now }
-          : i,
-      ),
-    );
+  async recordUse(id: string): Promise<void> {
+    const updated = await firstValueFrom(this.api.recordUse(id));
+    this.replaceLocal(updated);
   }
 
-  recordView(id: string): void {
-    this._items.update((list) =>
-      list.map((i) => (i.id === id ? { ...i, viewCount: i.viewCount + 1 } : i)),
-    );
+  async recordView(id: string): Promise<void> {
+    const updated = await firstValueFrom(this.api.recordView(id));
+    this.replaceLocal(updated);
   }
 
-  /** Replace the entire collection (used after an import). */
-  replaceAll(items: InventoryItem[]): void {
-    this._items.set(items);
+  private replaceLocal(item: InventoryItem): void {
+    this._items.update((list) => list.map((i) => (i.id === item.id ? item : i)));
   }
+}
 
-  constructor() {
-    effect(() => {
-      this.persistence.write(STORAGE_KEY, this._items());
-    });
-  }
+function isoDate(): string {
+  return new Date().toISOString().slice(0, 10);
 }

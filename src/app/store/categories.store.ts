@@ -1,19 +1,20 @@
-import { Injectable, Signal, computed, effect, inject, signal } from '@angular/core';
-import { LocalStoragePersistenceService } from './persistence/local-storage.service';
-import {
-  Category,
-  DEFAULT_CATEGORIES,
-} from '../modules/categories/models/category.model';
+import { Injectable, Signal, computed, inject, signal } from '@angular/core';
+import { firstValueFrom } from 'rxjs';
 
-const STORAGE_KEY = 'categories';
+import { CategoriesApi } from '../api/categories.api';
+import { Category, DEFAULT_CATEGORIES } from '../modules/categories/models/category.model';
 
+/**
+ * Cache of built-in (global) categories plus the current owner's user-defined ones.
+ * Hydrated from the server on first injection; mutations call the API and update
+ * the local signal on success.
+ */
 @Injectable({ providedIn: 'root' })
 export class CategoriesStore {
-  private readonly persistence = inject(LocalStoragePersistenceService);
+  private readonly api = inject(CategoriesApi);
 
-  private readonly _categories = signal<Category[]>(
-    this.persistence.read<Category[]>(STORAGE_KEY) ?? [...DEFAULT_CATEGORIES],
-  );
+  private readonly _categories = signal<Category[]>([...DEFAULT_CATEGORIES]);
+  private hydrated = false;
 
   readonly categories = this._categories.asReadonly();
 
@@ -31,41 +32,40 @@ export class CategoriesStore {
     return this.byIdMap().get(id)?.name ?? 'Uncategorized';
   }
 
-  add(input: { name: string; color?: string; icon?: string }): Category {
-    const category: Category = {
-      id: crypto.randomUUID(),
-      name: input.name.trim(),
-      builtIn: false,
-      color: input.color,
-      icon: input.icon ?? 'category',
-    };
-    this._categories.update((list) => [...list, category]);
-    return category;
+  async ensureLoaded(): Promise<void> {
+    if (this.hydrated) return;
+    await this.reload();
   }
 
-  rename(id: string, name: string): void {
+  async reload(): Promise<void> {
+    const page = await firstValueFrom(this.api.list(0, 200));
+    this._categories.set([...page.items]);
+    this.hydrated = true;
+  }
+
+  reset(): void {
+    this._categories.set([...DEFAULT_CATEGORIES]);
+    this.hydrated = false;
+  }
+
+  async add(input: { name: string; color?: string; icon?: string }): Promise<Category> {
+    const created = await firstValueFrom(this.api.create(input));
+    this._categories.update((list) => [...list, created]);
+    return created;
+  }
+
+  async rename(id: string, name: string): Promise<void> {
     const trimmed = name.trim();
     if (!trimmed) return;
-    this._categories.update((list) =>
-      list.map((c) => (c.id === id ? { ...c, name: trimmed } : c)),
-    );
+    const updated = await firstValueFrom(this.api.rename(id, trimmed));
+    this._categories.update((list) => list.map((c) => (c.id === id ? updated : c)));
   }
 
-  /** Built-in categories cannot be removed — only user-added ones. */
-  remove(id: string): boolean {
+  async remove(id: string): Promise<boolean> {
     const target = this._categories().find((c) => c.id === id);
     if (!target || target.builtIn) return false;
+    await firstValueFrom(this.api.remove(id));
     this._categories.update((list) => list.filter((c) => c.id !== id));
     return true;
-  }
-
-  replaceAll(categories: Category[]): void {
-    this._categories.set(categories);
-  }
-
-  constructor() {
-    effect(() => {
-      this.persistence.write(STORAGE_KEY, this._categories());
-    });
   }
 }
