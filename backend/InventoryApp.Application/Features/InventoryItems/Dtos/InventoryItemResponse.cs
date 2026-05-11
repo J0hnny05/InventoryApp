@@ -1,0 +1,26 @@
+namespace InventoryApp.Application.Features.InventoryItems.Dtos;
+
+public sealed record InventoryItemResponse(
+    Guid Id,
+    string Name,
+    string CategoryId,
+    decimal PurchasePrice,
+    DateOnly PurchaseDate,
+    string Currency,
+    string? Description,
+    string? Brand,
+    string? Condition,
+    string? Location,
+    IReadOnlyList<string> Tags,
+    bool Pinned,
+    string Status,
+    DateOnly? SoldAt,
+    decimal? SalePrice,
+    int UseCount,
+    DateTime? LastUsedAt,
+    int ViewCount,
+    DateTime CreatedAt,
+    DateTime UpdatedAt,
+    decimal Profit,
+    decimal Roi,
+    int DaysOwned);
