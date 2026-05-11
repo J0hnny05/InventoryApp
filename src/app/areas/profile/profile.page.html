@@ -1,0 +1,90 @@
+<section class="page profile">
+  <header class="profile__head">
+    <div class="profile__identity">
+      <span class="profile__avatar" aria-hidden="true">{{ initial() }}</span>
+      <div>
+        <p class="profile__greeting">{{ greeting() }},</p>
+        <h1 class="profile__name">
+          {{ user()?.username }}
+          <span class="profile__role" [attr.data-role]="user()?.role">{{ roleBadge() }}</span>
+        </h1>
+      </div>
+    </div>
+    <div class="profile__actions">
+      <a mat-stroked-button routerLink="/inventory">
+        <mat-icon>inventory_2</mat-icon>
+        Open inventory
+      </a>
+      <button mat-stroked-button color="warn" type="button" (click)="logout()">
+        <mat-icon>logout</mat-icon>
+        Logout
+      </button>
+    </div>
+  </header>
+
+  @if (loading()) {
+    <div class="profile__loading"><mat-spinner diameter="32" /></div>
+  } @else if (error()) {
+    <div class="profile__error">{{ error() }}</div>
+  } @else if (stats(); as s) {
+    <div class="profile__grid">
+      <invy-stat-card label="Owned items" [value]="s.ownedCount.toString()" [hint]="s.pinnedCount + ' pinned'" />
+      <invy-stat-card label="Sold items" [value]="s.soldCount.toString()" [hint]="s.totalUseCount + ' uses · ' + s.totalViewCount + ' views'" />
+      <invy-stat-card label="Owned value" [value]="ownedValueText()" />
+      <invy-stat-card label="Realized profit" [value]="profitText()" [valueClass]="profitToneClass()" />
+    </div>
+
+    <div class="profile__lists">
+      <article class="profile__list">
+        <header>
+          <h2>Recently added</h2>
+          <a routerLink="/inventory">See all</a>
+        </header>
+        @if (s.recentItems.length === 0) {
+          <p class="profile__empty">No items yet — add your first one from <a routerLink="/inventory">Inventory</a>.</p>
+        } @else {
+          <ul>
+            @for (it of s.recentItems; track it.id) {
+              <li>
+                <a [routerLink]="['/inventory', it.id]" class="profile__row">
+                  <span class="profile__row-name">{{ it.name }}</span>
+                  <span class="profile__row-meta">{{ it.purchasePrice | invyMoney:it.currency }}</span>
+                </a>
+              </li>
+            }
+          </ul>
+        }
+      </article>
+
+      <article class="profile__list">
+        <header>
+          <h2>Recently sold</h2>
+          <a routerLink="/sold">See all</a>
+        </header>
+        @if (s.recentSales.length === 0) {
+          <p class="profile__empty">Nothing sold yet.</p>
+        } @else {
+          <ul>
+            @for (it of s.recentSales; track it.id) {
+              <li>
+                <a [routerLink]="['/inventory', it.id]" class="profile__row">
+                  <span class="profile__row-name">{{ it.name }}</span>
+                  <span class="profile__row-meta" [class]="it.profit | invyProfitClass">
+                    {{ (it.profit > 0 ? '+' : '') }}{{ it.profit | invyMoney:it.currency }}
+                  </span>
+                </a>
+              </li>
+            }
+          </ul>
+        }
+      </article>
+    </div>
+
+    <footer class="profile__meta">
+      <span>Member since {{ s.createdAt | date:'mediumDate' }}</span>
+      @if (s.lastLoginAt) {
+        <span>· Last login {{ s.lastLoginAt | date:'medium' }}</span>
+      }
+    </footer>
+  }
+</section>

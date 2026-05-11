@@ -1,0 +1,69 @@
+<section class="page helpers">
+  <header class="helpers__head">
+    <div>
+      <h1>Helpers</h1>
+      <p>Accounts that can manage your inventory under the permissions you choose.</p>
+    </div>
+    <button mat-flat-button color="primary" type="button" (click)="openCreate()">
+      <mat-icon>person_add</mat-icon>
+      Add helper
+    </button>
+  </header>
+
+  @if (loading()) {
+    <div class="helpers__loading"><mat-spinner diameter="32" /></div>
+  } @else if (error()) {
+    <div class="helpers__error">{{ error() }}</div>
+  } @else if (helpers().length === 0) {
+    <div class="helpers__empty">
+      <mat-icon>group_off</mat-icon>
+      <p>You haven't invited any helpers yet.</p>
+      <button mat-stroked-button (click)="openCreate()">Create your first helper</button>
+    </div>
+  } @else {
+    <div class="helpers__table-wrap">
+      <table mat-table [dataSource]="helpers()" class="mat-elevation-z1">
+        <ng-container matColumnDef="username">
+          <th mat-header-cell *matHeaderCellDef>Username</th>
+          <td mat-cell *matCellDef="let h">
+            <strong>{{ h.username }}</strong>
+            @if (h.isBlocked) { <span class="helpers__pill helpers__pill--blocked">blocked</span> }
+            @if (h.email) { <div class="helpers__sub">{{ h.email }}</div> }
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="permissions">
+          <th mat-header-cell *matHeaderCellDef>Permissions</th>
+          <td mat-cell *matCellDef="let h">{{ permList(h.permissions) }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="lastLoginAt">
+          <th mat-header-cell *matHeaderCellDef>Last login</th>
+          <td mat-cell *matCellDef="let h">
+            {{ h.lastLoginAt ? (h.lastLoginAt | date:'medium') : '—' }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="createdAt">
+          <th mat-header-cell *matHeaderCellDef>Created</th>
+          <td mat-cell *matCellDef="let h">{{ h.createdAt | date:'mediumDate' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef class="helpers__col-actions">Actions</th>
+          <td mat-cell *matCellDef="let h" class="helpers__col-actions">
+            <button mat-icon-button matTooltip="Edit permissions" (click)="openEdit(h)">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" matTooltip="Delete helper" (click)="remove(h)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </div>
+  }
+</section>

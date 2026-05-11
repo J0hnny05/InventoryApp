@@ -30,10 +30,12 @@
         </div>
       </div>
       <div class="inv-hero__actions">
-        <button matButton="filled" (click)="openAddDialog()">
-          <mat-icon>add</mat-icon>
-          <span>Add item</span>
-        </button>
+        @if (canAdd()) {
+          <button matButton="filled" (click)="openAddDialog()">
+            <mat-icon>add</mat-icon>
+            <span>Add item</span>
+          </button>
+        }
       </div>
     </mat-card-content>
   </mat-card>
@@ -90,10 +92,12 @@
         title="No items yet"
         message="Add the things you own — clothes, books, gadgets, vehicles. You can mark them as sold later and track your profit."
       >
-        <button matButton="filled" (click)="openAddDialog()">
-          <mat-icon>add</mat-icon>
-          <span>Add your first item</span>
-        </button>
+        @if (canAdd()) {
+          <button matButton="filled" (click)="openAddDialog()">
+            <mat-icon>add</mat-icon>
+            <span>Add your first item</span>
+          </button>
+        }
       </invy-empty-state>
     } @else {
       <invy-empty-state
@@ -110,6 +114,11 @@
         <invy-item-card
           [item]="it"
           [category]="categoryById(it.categoryId)"
+          [canEdit]="canEdit()"
+          [canDelete]="canDelete()"
+          [canSell]="canSell()"
+          [canUse]="canRecordUse()"
+          [canPin]="canPin()"
           (pin)="togglePin($event)"
           (use)="recordUse($event)"
           (sell)="openSellDialog($event)"
@@ -118,5 +127,13 @@
         />
       }
     </div>
+    <mat-paginator
+      class="inv-paginator"
+      [length]="total()"
+      [pageSize]="pageSize()"
+      [pageSizeOptions]="[10, 25, 50, 100]"
+      [pageIndex]="skip() / pageSize()"
+      (page)="onPage($event)"
+    />
   }
 </section>
